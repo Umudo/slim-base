@@ -22,6 +22,8 @@ spl_autoload_register(function($class) {
 
         return true;
     }
+
+    return false;
 });
 
 date_default_timezone_set('Europe/Istanbul');
