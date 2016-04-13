@@ -1,7 +1,5 @@
 <?php
 
-$app->add(new \App\Middleware\SessionMiddleware());
-
 $app->add(function (Psr\Http\Message\RequestInterface $request, Psr\Http\Message\ResponseInterface $response, callable $next) {
     $uri = $request->getUri();
     $path = $uri->getPath();
@@ -17,3 +15,5 @@ $app->add(function (Psr\Http\Message\RequestInterface $request, Psr\Http\Message
 
     return $next($request, $response);
 });
+
+$app->add(new \App\Middleware\SessionMiddleware());
