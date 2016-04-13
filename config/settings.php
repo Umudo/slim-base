@@ -5,6 +5,9 @@ return [
         'displayErrorDetails' => true, //set false in production
         'determineRouteBeforeAppMiddleware' => true, //When true, the route is calculated before any middleware is executed. This means that you can inspect route parameters in middleware if you need to.
         'production' => false,
+        'default_controller' => 'Home',
+        'default_action' => 'index',
+        'action_suffix' => 'Action',
 
         //PHP-View settings
         'renderer' => [
