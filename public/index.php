@@ -4,7 +4,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 spl_autoload_register(function($class) {
     $prefix = 'App\\';
-    $base_dir = __DIR__.'/../App';
+    $base_dir = __DIR__.'/../App/';
 
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {

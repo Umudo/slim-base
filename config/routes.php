@@ -1,6 +1,10 @@
 <?php
 
-$app->map(['GET', 'POST'], '/[{controller}][/{action}][/{parameters:.+}]', function (Psr\Http\Message\RequestInterface $request, Psr\Http\Message\ResponseInterface $response, $args) {
+$app->map(['GET', 'POST'], '/', function (Psr\Http\Message\RequestInterface $request, Psr\Http\Message\ResponseInterface $response, $args) {
+    //TODO: FILL HERE
+});
+
+$app->map(['GET', 'POST'], '/{controller}[/{action}[/{parameters:.+}]]', function (Psr\Http\Message\RequestInterface $request, Psr\Http\Message\ResponseInterface $response, $args) {
     $controller_name = ucwords(strtolower($args['controller']));
     $action_name = $args['action'];
     $valid_name_regex = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/';
