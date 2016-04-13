@@ -18,7 +18,7 @@ return [
         //Monolog settings
         'logger' => [
             'name' => 'trails-app',
-            'path' => __DIR__.'/../logs',
+            'path' => __DIR__.'/../logs/log', //this includes the filename, so the file created would be named log-YYYY-MM-DD
             'maxFiles' => 14,
             'minimumLogLevel' => \Monolog\Logger::DEBUG //Change to NOTICE on production
         ]
