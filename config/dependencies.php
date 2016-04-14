@@ -3,11 +3,23 @@
 $container = $app->getContainer();
 
 $container['renderer'] = function ($c) {
+    /**
+     * @var \Slim\Container $c
+     * @var array           $settings
+     */
+    
     $settings = $c->get('settings')['renderer'];
+
     return new \Slim\Views\PhpRenderer($settings['views_path']);
 };
 
 $container['logger'] = function ($c) {
+    /**
+     * @var \Slim\Container $c
+     * @var \Monolog\Logger $logger
+     * @var array           $settings
+     */
+
     $settings = $c->get('settings')['logger'];
     $logger = new \Monolog\Logger($settings['name']);
 
@@ -26,9 +38,18 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
+/**
+ * @param \Interop\Container\ContainerInterface $c
+ *
+ * @return Closure
+ */
 $container['errorHandler'] = function ($c) {
-    return function (Psr\Http\Message\RequestInterface $request, Psr\Http\Message\ResponseInterface $response, Throwable $error) use ($c) {
-        /** @var \Psr\Log\LoggerInterface $logger */
+    return function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\Message\ResponseInterface $response, Throwable $error) use ($c) {
+        /**
+         * @var \Slim\Container $c
+         * @var \Monolog\Logger $logger
+         */
+
         $logger = $c->get('logger');
 
         $text = sprintf('Type: %s' . PHP_EOL, get_class($error));

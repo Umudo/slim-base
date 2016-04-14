@@ -1,6 +1,6 @@
 <?php
 
-$app->add(function (Psr\Http\Message\RequestInterface $request, Psr\Http\Message\ResponseInterface $response, callable $next) {
+$app->add(function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\Message\ResponseInterface $response, callable $next) {
     $uri = $request->getUri();
     $path = $uri->getPath();
 

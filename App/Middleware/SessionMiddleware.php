@@ -3,7 +3,7 @@
 namespace App\Middleware;
 
 use Psr\Http\Message\{
-    RequestInterface,
+    ServerRequestInterface,
     ResponseInterface
 };
 
@@ -26,7 +26,7 @@ final class SessionMiddleware
         $this->options = array_merge($this->options, $options);
     }
 
-    public function __invoke(RequestInterface $request, ResponseInterface $response, callable $next)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         $this->start();
         $this->checkSession();

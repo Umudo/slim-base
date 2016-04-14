@@ -1,6 +1,6 @@
 <?php
 
-$app->map(['GET', 'POST'], '/[{controller}]', function (Psr\Http\Message\RequestInterface $request, Psr\Http\Message\ResponseInterface $response, $args) {
+$app->map(['GET', 'POST'], '/[{controller}]', function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\Message\ResponseInterface $response, $args) {
     $settings = $this->get('settings');
     $controller_name = empty($args['controller']) ? $settings['default_controller'] : $args['controller'];
     $controller_name = ucwords(strtolower($controller_name));
@@ -44,7 +44,7 @@ $app->map(['GET', 'POST'], '/[{controller}]', function (Psr\Http\Message\Request
     return call_user_func_array([$class, $full_default_action_name], $args['parameters']);
 });
 
-$app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function (Psr\Http\Message\RequestInterface $request, Psr\Http\Message\ResponseInterface $response, $args) {
+$app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\Message\ResponseInterface $response, $args) {
     $controller_name = ucwords(strtolower($args['controller']));
     $action_name = $args['action'];
     $valid_name_regex = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/';
