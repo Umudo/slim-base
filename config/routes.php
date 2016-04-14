@@ -50,7 +50,23 @@ $app->map(['GET', 'POST'], '/[{controller}]', function (Psr\Http\Message\ServerR
         return $notFoundHandler($request, $response);
     }
 
-    return call_user_func([$class, $full_default_action_name]); //Parameters should be used with $request->getAttribute()
+    $action_response = call_user_func([$class, $full_default_action_name]); //Parameters should be used with $request->getAttribute()
+
+    if ($action_response instanceof \Psr\Http\Message\ResponseInterface) {
+        $response = $action_response;
+    } else if (is_string($action_response)) {
+        $response->getBody()->write($action_response);
+    } else if (is_array($action_response)) {
+        $response->withJSON($action_response);
+    } else {
+        if ($settings["production"]) {
+            $response->getBody()->write("");
+        } else {
+            $response->getBody()->write("`" . __FILE__ . "` on line " . __LINE__ . ": Return type is not valid in `{$full_class_name}` `{$full_default_action_name}`");
+        }
+    }
+
+    return $response;
 });
 
 $app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\Message\ResponseInterface $response, $args) {
@@ -104,5 +120,21 @@ $app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function 
         return $notFoundHandler($request, $response);
     }
 
-    return call_user_func_array([$class, $full_action_name], $args['parameters'] ?? array());
+    $action_response = call_user_func_array([$class, $full_action_name], $args['parameters'] ?? array());
+
+    if ($action_response instanceof \Psr\Http\Message\ResponseInterface) {
+        $response = $action_response;
+    } else if (is_string($action_response)) {
+        $response->getBody()->write($action_response);
+    } else if (is_array($action_response)) {
+        $response->withJSON($action_response);
+    } else {
+        if ($settings["production"]) {
+            $response->getBody()->write("");
+        } else {
+            $response->getBody()->write("`" . __FILE__ . "` on line " . __LINE__ . ": Return type is not valid in `{$full_class_name}` `{$full_action_name}`");
+        }
+    }
+
+    return $response;
 });
