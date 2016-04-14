@@ -2,7 +2,7 @@
 
 $container = $app->getContainer();
 
-$container['renderer'] = function ($c) {
+$container['view'] = function ($c) {
     /**
      * @var \Slim\Container $c
      * @var array           $settings

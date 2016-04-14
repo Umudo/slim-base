@@ -11,7 +11,7 @@ return [
 
         //PHP-View settings
         'renderer' => [
-            'views_path' => __DIR__.'../views/',
+            'views_path' => __DIR__.'/../views/',
             'template_file_name' => 'template.php'
         ],
 

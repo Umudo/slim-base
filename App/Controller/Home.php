@@ -15,7 +15,22 @@ class Home extends Controller
 {
     public function indexAction()
     {
-        $this->response->getBody()->write("Hello World");
-        return $this->response;
+        $this->renderView($this->response, 'test.php', ['test' => 'View Render Test']);
+    }
+
+    public function exampleStringAction()
+    {
+        return "Hello World";
+    }
+
+    public function exampleJSONAction()
+    {
+        return array("text" => "Hello World");
+    }
+
+    public function exampleResponseAction()
+    {
+        $this->response->getBody()->write("Response Test");
+        return clone $this->response;
     }
 }
