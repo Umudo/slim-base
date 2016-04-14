@@ -29,6 +29,7 @@ spl_autoload_register(function($class) {
 date_default_timezone_set('Europe/Istanbul');
 setlocale(LC_ALL, 'en_US.UTF-8');
 mb_internal_encoding("UTF-8");
+error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
 
 $settings = require __DIR__ . '/../config/settings.php';
 $app = new \Slim\App($settings);
