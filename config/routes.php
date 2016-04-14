@@ -59,10 +59,12 @@ $app->map(['GET', 'POST'], '/[{controller}]', function (Psr\Http\Message\ServerR
     } else if (is_array($action_response)) {
         $response->withJSON($action_response);
     } else {
-        if ($settings["production"]) {
-            $response->getBody()->write("");
-        } else {
-            $response->getBody()->write("`" . __FILE__ . "` on line " . __LINE__ . ": Return type is not valid in `{$full_class_name}` `{$full_default_action_name}`");
+        if (empty($response->getBody()->getSize())) {
+            if ($settings["production"]) {
+                $response->getBody()->write("");
+            } else {
+                $response->getBody()->write("`" . __FILE__ . "` on line " . __LINE__ . ": Return type is not valid in `{$full_class_name}` `{$full_default_action_name}`");
+            }
         }
     }
 
@@ -129,10 +131,12 @@ $app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function 
     } else if (is_array($action_response)) {
         $response->withJSON($action_response);
     } else {
-        if ($settings["production"]) {
-            $response->getBody()->write("");
-        } else {
-            $response->getBody()->write("`" . __FILE__ . "` on line " . __LINE__ . ": Return type is not valid in `{$full_class_name}` `{$full_action_name}`");
+        if (empty($response->getBody()->getSize())) {
+            if ($settings["production"]) {
+                $response->getBody()->write("");
+            } else {
+                $response->getBody()->write("`" . __FILE__ . "` on line " . __LINE__ . ": Return type is not valid in `{$full_class_name}` `{$full_action_name}`");
+            }
         }
     }
 
