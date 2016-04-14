@@ -3,8 +3,7 @@
 namespace App\Middleware;
 
 use Psr\Http\Message\{
-    ServerRequestInterface,
-    ResponseInterface
+    ServerRequestInterface, ResponseInterface
 };
 
 use \App\Session;

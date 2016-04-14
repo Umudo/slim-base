@@ -1,5 +1,9 @@
 <?php
 
+//Lower ones will be called prior to upper ones. Current run order Redirect -> Session -> Slim App -> Session -> Redirect
+
+$app->add(new \App\Middleware\SessionMiddleware());
+
 $app->add(function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\Message\ResponseInterface $response, callable $next) {
     $uri = $request->getUri();
     $path = $uri->getPath();
@@ -15,5 +19,3 @@ $app->add(function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\M
 
     return $next($request, $response);
 });
-
-$app->add(new \App\Middleware\SessionMiddleware());
