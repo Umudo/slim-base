@@ -3,6 +3,7 @@
   "description": "Basic starter package for Slim 3.",
   "license": "MIT",
   "require": {
+    "php": "^7.0",
     "slim/slim": "^3.0",
     "slim/php-view": "^2.1",
     "monolog/monolog": "^1.18",
