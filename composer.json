@@ -1,9 +1,12 @@
 {
-    "require": {
-        "slim/slim": "^3.0",
-        "slim/php-view": "^2.1",
-        "monolog/monolog": "^1.18",
-        "mongodb/mongodb": "^1.0.0",
-        "ext-redis": "*"
-    }
+  "name": "umudo/slim-base",
+  "description": "Basic starter package for Slim 3.",
+  "license": "MIT",
+  "require": {
+    "slim/slim": "^3.0",
+    "slim/php-view": "^2.1",
+    "monolog/monolog": "^1.18",
+    "mongodb/mongodb": "^1.0.0",
+    "ext-redis": "*"
+  }
 }
