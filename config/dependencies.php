@@ -23,8 +23,6 @@ $container['logger'] = function ($c) {
     $settings = $c->get('settings')['logger'];
     $logger = new \Monolog\Logger($settings['name']);
 
-    \Monolog\ErrorHandler::register($logger);
-
     $rotating_file_handler = new \Monolog\Handler\RotatingFileHandler($settings['path'], $settings['maxFiles'], $settings['minimumLogLevel']);
     $rotating_file_handler->setFormatter(new \Monolog\Formatter\LineFormatter(\Monolog\Formatter\LineFormatter::SIMPLE_FORMAT . PHP_EOL, null, true, false)); //Enable inline line breaks
     $logger->pushHandler($rotating_file_handler);
