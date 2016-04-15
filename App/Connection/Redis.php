@@ -32,6 +32,7 @@ class Redis extends Connection
 
         $this->options = $options;
 
+        $this->client = new \Redis();
 
         if ($options["connect"] === true) {
             $this->connect();
@@ -40,7 +41,6 @@ class Redis extends Connection
 
     public function connect()
     {
-        $this->client = new \Redis();
         if ($this->options["persistent"] === true) {
             try {
                 $this->client->pconnect($this->options["host"], $this->options["port"], $this->options["timeout"]);
