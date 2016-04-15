@@ -97,3 +97,14 @@ $container['mongo-default'] = function ($c) {
 
     return $mongo;
 };
+
+$container['redis-default'] = function ($c) {
+    /**
+     * @var Slim\Container $c
+     */
+    $settings = $c->get('settings')["db"]["redis"]["default"];
+
+    $redis = new \App\Connection\Redis($settings);
+
+    return $redis->getClient();
+};

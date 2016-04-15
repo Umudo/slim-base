@@ -44,6 +44,16 @@ return [
                     ],
                     'database'      => 'databaseName'
                 ]
+            ],
+            'redis' => [
+                'default' => [
+                    'host'       => '127.0.0.1',
+                    'port'       => 27017,
+                    'persistent' => true,
+                    'timeout'    => 2,
+                    'connect'    => true, //constructor will connect if true, otherwise you need to call connect()
+                    'password'   => ''
+                ]
             ]
         ]
     ]

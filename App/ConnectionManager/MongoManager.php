@@ -1,10 +1,11 @@
 <?php
 
-namespace App;
+namespace App\ConnectionManager;
 
 use App\Base\ConnectionManager;
+use App\Connection\Mongo;
 
-class Mongo extends ConnectionManager
+class MongoManager extends ConnectionManager
 {
     /**
      * @var \App\Connection\Mongo[]
@@ -14,7 +15,7 @@ class Mongo extends ConnectionManager
     /**
      * @param string $instance
      *
-     * @return Connection\Mongo
+     * @return Mongo
      * @throws \Exception
      */
     public static function getInstance($instance = "default")
@@ -26,10 +27,10 @@ class Mongo extends ConnectionManager
         }
 
         $name = self::getPrefix() . $instance;
-        
+
         if (self::$ci->has($name)) {
             $client = self::$ci->get($name);
-            if ($client instanceof Connection\Mongo) {
+            if ($client instanceof Mongo) {
                 self::$instances[$instance] = $client;
             } else {
                 throw new \Exception("{$name} in container is not an instance of \\App\\Connection\\Mongo");
