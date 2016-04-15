@@ -19,11 +19,17 @@ abstract class ConnectionManager
 
     public static function getInstance($instance = "default")
     {
-
+        if (empty(self::$ci) || self::$ci instanceof ContainerInterface === false) {
+            throw new \InvalidArgumentException("Provided container is either empty or not an instance of ContainerInterface.");
+        }
     }
 
     public static function setContainer($ci)
     {
         self::$ci = $ci;
+    }
+
+    public static function getPrefix() {
+        return "";
     }
 }

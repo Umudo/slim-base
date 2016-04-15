@@ -2,8 +2,6 @@
 
 namespace App;
 
-
-use Interop\Container\ContainerInterface;
 use App\Base\ConnectionManager;
 
 class Mongo extends ConnectionManager
@@ -21,19 +19,20 @@ class Mongo extends ConnectionManager
      */
     public static function getInstance($instance = "default")
     {
+        parent::getInstance($instance);
+
         if (isset(self::$instances[$instance])) {
             return self::$instances[$instance];
         }
 
-        if (empty(self::$ci) || self::$ci instanceof ContainerInterface === false) {
-            throw new \InvalidArgumentException("Provided container is invalid.");
-        }
-
-        $name = "mongo-" . $instance;
+        $name = self::getPrefix() . $instance;
+        
         if (self::$ci->has($name)) {
             $client = self::$ci->get($name);
             if ($client instanceof Connection\Mongo) {
                 self::$instances[$instance] = $client;
+            } else {
+                throw new \Exception("{$name} in container is not an instance of \\App\\Connection\\Mongo");
             }
 
             return $client;
@@ -42,4 +41,9 @@ class Mongo extends ConnectionManager
         throw new \Exception("Either container is not set or the container does not have {$name}");
     }
 
+
+    public static function getPrefix()
+    {
+        return "mongo-";
+    }
 }
