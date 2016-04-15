@@ -7,7 +7,7 @@ $container['view'] = function ($c) {
      * @var \Slim\Container $c
      * @var array           $settings
      */
-    
+
     $settings = $c->get('settings')['renderer'];
 
     return new \Slim\Views\PhpRenderer($settings['views_path']);
@@ -81,4 +81,19 @@ $container['errorHandler'] = function ($c) {
 
         return $errorHandler($request, $response, $error);
     };
+};
+
+$container['mongo-default'] = function ($c) {
+    /**
+     * @var Slim\Container $c
+     */
+    $settings = $c->get('settings')["db"]["mongo"]["default"];
+
+    $mongo = new \App\Connection\Mongo($settings['host'], $settings['port'], $settings['uriOptions'], $settings['driverOptions']);
+
+    if (!empty($settings['database'])) {
+        $mongo->selectDatabase($settings['database']);
+    }
+
+    return $mongo;
 };

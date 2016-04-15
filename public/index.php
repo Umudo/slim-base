@@ -41,4 +41,6 @@ require __DIR__ . '/../config/middleware.php';
 // Register routes
 require __DIR__ . '/../config/routes.php';
 
+\App\Base\ConnectionManager::setContainer($app->getContainer());
+
 $app->run();
