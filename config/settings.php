@@ -52,7 +52,6 @@ return [
                     'port'       => 6379,
                     'persistent' => true,
                     'timeout'    => 2,
-                    'connect'    => true, //constructor will connect if true, otherwise you need to call connect()
                     'password'   => ''
                 ]
             ]

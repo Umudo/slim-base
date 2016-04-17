@@ -75,10 +75,17 @@ $container['errorHandler'] = function ($c) {
             $logger->notice($text);
         }
 
-        $errorHandler = new \Slim\Handlers\PhpError(true); //Includes Throwable support
+        $errorHandler = new \Slim\Handlers\PhpError(true); //We pass true here so the error_log will remain empty.
 
         return $errorHandler($request, $response, $error);
     };
+};
+
+$container['phpErrorHandler'] = function ($c) {
+    /**
+     * @var Slim\Container $c
+     */
+    return $c->get('errorHandler');
 };
 
 $container['mongo-default'] = function ($c) {

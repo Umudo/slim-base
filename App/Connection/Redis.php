@@ -21,6 +21,8 @@ class Redis extends Connection
 
     private $options = [];
 
+    private $connected = false;
+
     public function __construct(array $options)
     {
         foreach ($this->optionsMustInclude as $mustKey)
@@ -33,10 +35,7 @@ class Redis extends Connection
         $this->options = $options;
 
         $this->client = new \Redis();
-
-        if ($options["connect"] === true) {
-            $this->connect();
-        }
+        $this->connect();
     }
 
     public function connect()
@@ -44,14 +43,18 @@ class Redis extends Connection
         if ($this->options["persistent"] === true) {
             try {
                 $this->client->pconnect($this->options["host"], $this->options["port"], $this->options["timeout"]);
+                $this->connected = true;
             } catch (\RedisException $e) {
                 $this->client->pconnect($this->options["host"], $this->options["port"], $this->options["timeout"]);
+                $this->connected = true;
             }
         } else {
             try {
                 $this->client->connect($this->options["host"], $this->options["port"], $this->options["timeout"]);
+                $this->connected = true;
             } catch (\RedisException $e) {
                 $this->client->connect($this->options["host"], $this->options["port"], $this->options["timeout"]);
+                $this->connected = true;
             }
         }
 
@@ -60,8 +63,26 @@ class Redis extends Connection
         }
     }
 
+    public function isConnected()
+    {
+        return $this->connected;
+    }
+
+    /**
+     * @return \Redis
+     */
     public function getClient()
     {
         return $this->client;
+    }
+
+    public function __call($name, $arguments) {
+        if (method_exists($this->getClient(), $name)) {
+            if (!$this->isConnected()) {
+                $this->connect();
+            }
+
+            return call_user_func_array([$this->getClient(), $name], $arguments);
+        }
     }
 }
