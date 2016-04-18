@@ -25,6 +25,9 @@ $container['logger'] = function ($c) {
 
     $rotating_file_handler = new \Monolog\Handler\RotatingFileHandler($settings['path'], $settings['maxFiles'], $settings['minimumLogLevel']);
     $rotating_file_handler->setFormatter(new \Monolog\Formatter\LineFormatter(\Monolog\Formatter\LineFormatter::SIMPLE_FORMAT . PHP_EOL, null, true, false)); //Enable inline line breaks
+    $logger->pushProcessor(new \Monolog\Processor\WebProcessor());
+    $logger->pushProcessor(new \Monolog\Processor\MemoryUsageProcessor());
+    $logger->pushProcessor(new \Monolog\Processor\MemoryPeakUsageProcessor());
     $logger->pushHandler($rotating_file_handler);
 
     if ($c->get('settings')['production'] === false) {
