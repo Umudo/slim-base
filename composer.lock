@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "22a1f9d1405b8be185fe5b4d920a33fe",
-    "content-hash": "dc38b3c22637eed921f23471a969c8e5",
+    "hash": "cc50ad44a8110d5ccd5852e8dbff4dac",
+    "content-hash": "9b8ac127f64be339ccb74fecea20b3dd",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -169,16 +169,16 @@
         },
         {
             "name": "nikic/fast-route",
-            "version": "v0.8.0",
+            "version": "v0.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/FastRoute.git",
-                "reference": "5e1f431ed2afe2be5d2bd97fa69b0e99b9ba45e6"
+                "reference": "31fa86924556b80735f98b294a7ffdfb26789f22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/FastRoute/zipball/5e1f431ed2afe2be5d2bd97fa69b0e99b9ba45e6",
-                "reference": "5e1f431ed2afe2be5d2bd97fa69b0e99b9ba45e6",
+                "url": "https://api.github.com/repos/nikic/FastRoute/zipball/31fa86924556b80735f98b294a7ffdfb26789f22",
+                "reference": "31fa86924556b80735f98b294a7ffdfb26789f22",
                 "shasum": ""
             },
             "require": {
@@ -208,7 +208,7 @@
                 "router",
                 "routing"
             ],
-            "time": "2016-03-25 23:46:52"
+            "time": "2015-06-18 19:15:47"
         },
         {
             "name": "pimple/pimple",
@@ -461,14 +461,7 @@
         }
     ],
     "packages-dev": [],
-    "aliases": [
-        {
-            "alias": "0.6",
-            "alias_normalized": "0.6.0.0",
-            "version": "0.8.0.0",
-            "package": "nikic/fast-route"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,

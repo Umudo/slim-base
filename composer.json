@@ -8,7 +8,6 @@
     "slim/php-view": "^2.1",
     "monolog/monolog": "^1.18",
     "mongodb/mongodb": "^1.0.0",
-    "ext-redis": "*",
-    "nikic/fast-route": "0.8 as 0.6"
+    "ext-redis": "*"
   }
 }
