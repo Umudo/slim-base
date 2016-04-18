@@ -9,6 +9,16 @@ return [
         'default_action'                    => 'index',
         'action_suffix'                     => 'Action',
 
+        //Session settings
+        'session'                           => [
+            'name'     => 'appName',
+            'lifetime' => 7200,
+            'path'     => null,
+            'domain'   => null,
+            'secure'   => false,
+            'httponly' => true,
+        ],
+
         //PHP-View settings
         'renderer'                          => [
             'views_path'         => __DIR__ . '/../views/',
@@ -45,7 +55,7 @@ return [
                     'database'      => 'databaseName'
                 ]
             ],
-            
+
             'redis' => [
                 'default' => [
                     'host'       => '127.0.0.1',

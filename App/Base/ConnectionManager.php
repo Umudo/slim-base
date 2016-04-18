@@ -24,7 +24,7 @@ abstract class ConnectionManager
         }
     }
 
-    public static function setContainer($ci)
+    public static function setContainer(ContainerInterface $ci)
     {
         self::$ci = $ci;
     }

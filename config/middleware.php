@@ -2,7 +2,7 @@
 
 //Lower ones will be called prior to upper ones. Current run order Redirect -> Session -> Slim App -> Session -> Redirect
 
-$app->add(new \App\Middleware\SessionMiddleware());
+$app->add(new \App\Middleware\SessionMiddleware($app->getContainer()->get('settings')['session']));
 
 $app->add(function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\Message\ResponseInterface $response, callable $next) {
     $uri = $request->getUri();
@@ -14,7 +14,7 @@ $app->add(function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\M
         // permanently redirect paths with a trailing slash
         // to their non-trailing counterpart
         $uri = $uri->withPath(substr($path_trimmed, 0, -1));
-        return $response->withRedirect((string)$uri, 301); //exists in \Slim\Http\Response
+        return $response->withStatus(301)->withHeader('Location', (string)$uri); //exists in \Slim\Http\Response
     }
 
     return $next($request, $response);

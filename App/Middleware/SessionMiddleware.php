@@ -11,7 +11,7 @@ use \App\Session;
 final class SessionMiddleware
 {
     protected $options = [
-      'name' => 'trailApp',
+      'name' => 'appName',
       'lifetime' => 7200,
       'path' => null,
       'domain' => null,
