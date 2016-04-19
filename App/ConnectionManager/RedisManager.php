@@ -42,7 +42,12 @@ class RedisManager extends ConnectionManager
         throw new \Exception("Either container is not set or the container does not have {$name}");
     }
 
-    public static function getPrefix() {
+    public static function instanceExists($instance)
+    {
+        return isset(self::$instances[$instance]);
+    }
+
+    protected static function getPrefix() {
         return "redis-";
     }
 

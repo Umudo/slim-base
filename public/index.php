@@ -44,6 +44,14 @@ register_shutdown_function(function () use ($app) {
         unset($error['message']);
         $logger->critical($message, $error);
     }
+
+    if (function_exists("fastcgi_finish_request")) {
+        fastcgi_finish_request();
+    }
+
+    /* @var \App\Queue\JobQueue $jobQueue */
+    $jobQueue = $app->getContainer()->get("jobQueue");
+    $jobQueue->pushJobs();
 });
 
 // Set up dependencies
@@ -53,6 +61,7 @@ require __DIR__ . '/../config/middleware.php';
 // Register routes
 require __DIR__ . '/../config/routes.php';
 
-\App\Base\ConnectionManager::setContainer($app->getContainer());
+\App\Helper\Container::setContainer($app->getContainer());
+\App\Base\ConnectionManager::setContainer();
 
 $app->run();

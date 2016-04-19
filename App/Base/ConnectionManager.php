@@ -3,6 +3,7 @@
 namespace App\Base;
 
 
+use App\Helper\Container;
 use Interop\Container\ContainerInterface;
 
 abstract class ConnectionManager
@@ -24,12 +25,21 @@ abstract class ConnectionManager
         }
     }
 
-    public static function setContainer(ContainerInterface $ci)
+    public static function setContainer(ContainerInterface $ci = null)
     {
+        if (empty($ci)) {
+            $ci = Container::getContainer();
+        }
+
         self::$ci = $ci;
     }
 
-    public static function getPrefix() {
+    public static function instanceExists($instance)
+    {
+        return false;
+    }
+
+    protected static function getPrefix() {
         return "";
     }
 }

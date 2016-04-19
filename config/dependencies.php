@@ -34,6 +34,10 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
+$container['jobQueue'] = function ($c) {
+    return new \App\Queue\JobQueue(["instanceName" => "default"], $c);
+};
+
 $container['errorHandler'] = function ($c) {
     return function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\Message\ResponseInterface $response, Throwable $error) use ($c) {
         /**

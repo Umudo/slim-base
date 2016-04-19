@@ -42,8 +42,12 @@ class MongoManager extends ConnectionManager
         throw new \Exception("Either container is not set or the container does not have {$name}");
     }
 
+    public static function instanceExists($instance)
+    {
+        return isset(self::$instances[$instance]);
+    }
 
-    public static function getPrefix()
+    protected static function getPrefix()
     {
         return "mongo-";
     }
