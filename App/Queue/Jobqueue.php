@@ -85,7 +85,7 @@ class JobQueue
      *
      * @throws \Exception
      */
-    public function addJob($class, $method, $args, $time = 0, $construct_args = [])
+    public function addJob($class, $method, $args = [], $time = 0, $construct_args = [])
     {
         $this->jobs[] = [
             "class"          => $class,
@@ -96,13 +96,13 @@ class JobQueue
         ];
     }
 
-    public function addUrgentJob($class, $method, $args, $construct_args = [])
+    public function addJobNow($class, $method, $args = [], $construct_args = [])
     {
         $job = [
             "class"          => $class,
             "method"         => $method,
             "args"           => $args,
-            "time"           => 0,
+            "time"           => 5,
             "construct_args" => $construct_args
         ];
 
