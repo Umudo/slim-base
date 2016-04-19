@@ -96,13 +96,13 @@ class JobQueue
         ];
     }
 
-    public function addJobNow($class, $method, $args = [], $construct_args = [])
+    public function addJobNow($class, $method, $args = [], $time = 0, $construct_args = [])
     {
         $job = [
             "class"          => $class,
             "method"         => $method,
             "args"           => $args,
-            "time"           => 5,
+            "time"           => $time,
             "construct_args" => $construct_args
         ];
 
