@@ -35,7 +35,8 @@ final class SessionMiddleware
 
     private function checkSession()
     {
-        $userAgent = Session::get("userAgent");
+        $userAgent = Session::get("HTTP_USER_AGENT");
+
         if (hash('sha256', $_SERVER['HTTP_USER_AGENT']) !== $userAgent) {
             Session::destroy();
 
