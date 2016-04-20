@@ -27,26 +27,26 @@ final class SessionMiddleware
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
-        $this->start();
-        $this->checkSession();
+        $this->start($request);
+        $this->checkSession($request);
 
         return $next($request, $response);
     }
 
-    private function checkSession()
+    private function checkSession(ServerRequestInterface $request)
     {
         $userAgent = Session::get("HTTP_USER_AGENT");
 
-        if (hash('sha256', $_SERVER['HTTP_USER_AGENT']) !== $userAgent) {
+        if (hash('sha256', $request->getHeader("HTTP_USER_AGENT")[0]) !== $userAgent) {
             Session::destroy();
 
-            $this->start();
+            $this->start($request);
             Session::regenerate(true);
         }
 
     }
 
-    private function start()
+    private function start(ServerRequestInterface $request)
     {
         if (session_status() == PHP_SESSION_ACTIVE) {
             return;
@@ -65,7 +65,7 @@ final class SessionMiddleware
         session_cache_limiter(false); //http://docs.slimframework.com/#Sessions
         session_start();
 
-        Session::set('HTTP_USER_AGENT', hash('sha256', $_SERVER['HTTP_USER_AGENT']));
+        Session::set('HTTP_USER_AGENT', hash('sha256', $request->getHeader("HTTP_USER_AGENT")[0]));
     }
 
 }
