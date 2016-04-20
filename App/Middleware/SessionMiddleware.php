@@ -11,12 +11,12 @@ use \App\Session;
 final class SessionMiddleware
 {
     protected $options = [
-      'name' => 'appName',
-      'lifetime' => 7200,
-      'path' => null,
-      'domain' => null,
-      'secure' => false,
-      'httponly' => true,
+        'name'     => 'appName',
+        'lifetime' => 7200,
+        'path'     => null,
+        'domain'   => null,
+        'secure'   => false,
+        'httponly' => true,
     ];
 
 
@@ -54,10 +54,10 @@ final class SessionMiddleware
         $options = $this->options;
         $current = session_get_cookie_params();
 
-        $lifetime = (int)($options['lifetime'] ?: $current['lifetime']);
-        $path     = $options['path'] ?: $current['path'];
-        $domain   = $options['domain'] ?: $current['domain'];
-        $secure   = (bool)$options['secure'];
+        $lifetime = (int)($options['lifetime'] ? : $current['lifetime']);
+        $path = $options['path'] ? : $current['path'];
+        $domain = $options['domain'] ? : $current['domain'];
+        $secure = (bool)$options['secure'];
         $httponly = (bool)$options['httponly'];
         session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
         session_name($options['name']);

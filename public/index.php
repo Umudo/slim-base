@@ -1,10 +1,10 @@
 <?php
 
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-spl_autoload_register(function($class) {
+spl_autoload_register(function ($class) {
     $prefix = 'App\\';
-    $base_dir = __DIR__.'/../App/';
+    $base_dir = __DIR__ . '/../App/';
 
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {
@@ -56,12 +56,14 @@ register_shutdown_function(function () use ($app) {
 
 // Set up dependencies
 require __DIR__ . '/../config/dependencies.php';
+
+\App\Helper\Container::setContainer($app->getContainer());
+
 // Register middleware
 require __DIR__ . '/../config/middleware.php';
 // Register routes
 require __DIR__ . '/../config/routes.php';
 
-\App\Helper\Container::setContainer($app->getContainer());
 \App\Base\ConnectionManager::setContainer();
 
 $app->run();

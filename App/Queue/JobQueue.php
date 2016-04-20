@@ -6,6 +6,13 @@ use App\ConnectionManager\RedisManager;
 use App\Helper\Container;
 use Interop\Container\ContainerInterface;
 
+/**
+ * Class JobQueue
+ * @package App\Queue
+ *
+ * This class uses redis as a backend to push jobs.
+ * Jobs are class methods that are either static or object methods.
+ */
 class JobQueue
 {
     /**
@@ -13,6 +20,11 @@ class JobQueue
      */
     protected $instanceName = "default";
     protected $queueKey     = "jobqueue";
+
+    /**
+     * @var int
+     */
+    protected $runFor = 60;
 
     /**
      * @var array
@@ -35,18 +47,22 @@ class JobQueue
             $this->instanceName = $options["instanceName"];
         }
 
+        if (isset($options["runFor"]) && preg_match('/[1-9][0-9]*/', $options["runFor"])) {
+            $this->runFor = (int)$options["runFor"];
+        }
+
         $this->redis = RedisManager::getInstance($this->instanceName);
 
         if (empty($ci)) {
             $ci = Container::getContainer();
         }
-        
+
         $this->ci = $ci;
     }
 
     public function consume()
     {
-        $run_for = time() + 59;
+        $run_for = time() + $this->runFor;
 
         /* @var \Monolog\Logger $logger */
         $logger = $this->ci->get("logger");

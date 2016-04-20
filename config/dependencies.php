@@ -35,7 +35,13 @@ $container['logger'] = function ($c) {
 };
 
 $container['jobQueue'] = function ($c) {
-    return new \App\Queue\JobQueue(["instanceName" => "default"], $c);
+    /**
+     * @var \Slim\Container $c
+     * @var array           $settings
+     */
+    $options = $c->get('settings')["jobQueue"];
+
+    return new \App\Queue\JobQueue($options, $c);
 };
 
 $container['errorHandler'] = function ($c) {

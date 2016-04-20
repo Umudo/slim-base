@@ -9,8 +9,8 @@ return [
         'default_action'                    => 'index',
         'action_suffix'                     => 'Action',
 
-        //Session settings
-        'session'                           => [
+        'session' => [
+            //Session settings
             'name'     => 'appName',
             'lifetime' => 7200,
             'path'     => null,
@@ -19,22 +19,27 @@ return [
             'httponly' => true,
         ],
 
-        //PHP-View settings
-        'renderer'                          => [
+        'renderer' => [
+            //PHP-View settings
             'views_path'         => __DIR__ . '/../views/',
             'template_file_name' => 'template.php'
         ],
 
-        //Monolog settings
-        'logger'                            => [
+        'logger' => [
+            //Monolog settings
             'name'            => 'appName',
             'path'            => __DIR__ . '/../logs/log', //this includes the filename, so the file created would be named log-YYYY-MM-DD
             'maxFiles'        => 14,
             'minimumLogLevel' => \Monolog\Logger::DEBUG //Change to NOTICE on production
         ],
 
-        //Database configurations
-        'db'                                => [
+        'jobQueue' => [
+            'instanceName' => 'default',
+            'runFor'       => 60,
+        ],
+
+        'db' => [
+            //Database configurations
             'mongo' => [
                 'default' => [
                     'host'          => 'mongodb://localhost',
