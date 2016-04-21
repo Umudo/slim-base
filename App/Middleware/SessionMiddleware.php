@@ -33,7 +33,7 @@ final class SessionMiddleware
 
         $response = $next($request, $response);
 
-        if (isset($this->options["updateLifetimeWithEachRequest"]) && $this->options["updateLifetimeWithEachRequest"] === true) {
+        if ($this->options["updateLifetimeWithEachRequest"] === true) {
             //Update session cookie lifetime.
             setcookie(session_name(), session_id(), time() + $this->options["lifetime"], $this->options["path"], $this->options["domain"], $this->options["secure"], $this->options["httponly"]);
         }
