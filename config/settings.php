@@ -11,12 +11,13 @@ return [
 
         'session' => [
             //Session settings
-            'name'     => 'appName',
-            'lifetime' => 7200,
-            'path'     => null,
-            'domain'   => null,
-            'secure'   => false,
-            'httponly' => true,
+            'name'                          => 'appName',
+            'lifetime'                      => 7200,
+            'path'                          => null,
+            'domain'                        => null,
+            'secure'                        => false,
+            'httponly'                      => true,
+            'updateLifetimeWithEachRequest' => true
         ],
 
         'renderer' => [
