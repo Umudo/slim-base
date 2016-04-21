@@ -30,10 +30,10 @@ class Escaper
             throw new \Exception('The string to escape is not a valid UTF-8 string.');
         }
 
-        return preg_replace_callback('#[^a-zA-Z0-9,\.\-_]#Su', '_escapeHtmlAttribute', $string);
+        return preg_replace_callback('#[^a-zA-Z0-9,\.\-_]#Su', ['\\App\\Helper\\Escaper', '_escapeHtmlAttribute'], $string);
     }
 
-    private static function _escapeHtmlAttribute($matches)
+    protected static function _escapeHtmlAttribute($matches)
     {
         /*
          * While HTML supports far more named entities, the lowest common denominator
@@ -90,7 +90,7 @@ class Escaper
             throw new \Exception('The string to escape is not a valid UTF-8 string.');
         }
 
-        $string = preg_replace_callback('#[^a-zA-Z0-9]#Su', '_escapeCss', $string);
+        $string = preg_replace_callback('#[^a-zA-Z0-9]#Su', ['\\App\\Helper\\Escaper', '_escapeCss'], $string);
 
         return $string;
     }
@@ -117,7 +117,7 @@ class Escaper
             throw new \Exception('The string to escape is not a valid UTF-8 string.');
         }
 
-        return preg_replace_callback('#[^a-zA-Z0-9,\._]#Su', '_escapeJs', $string);
+        return preg_replace_callback('#[^a-zA-Z0-9,\._]#Su', ['\\App\\Helper\\Escaper', '_escapeJs'], $string);
     }
 
     private function _escapeJs($matches)

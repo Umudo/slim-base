@@ -57,13 +57,13 @@ register_shutdown_function(function () use ($app) {
 // Set up dependencies
 require __DIR__ . '/../config/dependencies.php';
 
+//Set up DIC Helper
 \App\Helper\Container::setContainer($app->getContainer());
+\App\Base\ConnectionManager::setContainer();
 
 // Register middleware
 require __DIR__ . '/../config/middleware.php';
 // Register routes
 require __DIR__ . '/../config/routes.php';
-
-\App\Base\ConnectionManager::setContainer();
 
 $app->run();
