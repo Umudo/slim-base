@@ -35,11 +35,14 @@ return [
         ],
 
         'jobQueue' => [
-            'enabled'      => true,
-            'instanceName' => 'default',
-            'runFor'       => 60,
-            'minCronCount' => 1,
-            'maxCronCount' => 10
+            'enabled'              => true,
+            'instanceName'         => 'default',
+            'runFor'               => 60,
+            'maxJobFetch'          => 10000,
+            'minCronCount'         => 1,
+            'maxCronCount'         => 2,
+            'pathToPhp'            => '/usr/local/bin/php',
+            'consumerCronFileName' => 'jobQueueConsumer.php'
         ],
 
         'db' => [

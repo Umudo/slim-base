@@ -34,11 +34,6 @@ abstract class ConnectionManager
         self::$ci = $ci;
     }
 
-    public static function instanceExists($instance)
-    {
-        return false;
-    }
-
     protected static function getPrefix() {
         return "";
     }
