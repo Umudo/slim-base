@@ -18,13 +18,7 @@ class JobQueue
     /**
      * @var string
      */
-    protected $instanceName = "default";
-    protected $queueKey     = "jobqueue";
-
-    /**
-     * @var int
-     */
-    protected $runFor = 60;
+    protected $queueKey = "jobqueue";
 
     /**
      * @var array
@@ -41,31 +35,81 @@ class JobQueue
      */
     protected $ci;
 
+    protected $options = [
+        'enabled'              => false,
+        'instanceName'         => 'default',
+        'runFor'               => 60,
+        'minCronCount'         => 1,
+        'maxCronCount'         => 10,
+        'consumerCronFileName' => 'jobQueueConsumer.php'
+    ];
+
     public function __construct(array $options = [], ContainerInterface $ci = null)
     {
-        if (isset($options["instanceName"]) && RedisManager::instanceExists($options["instanceName"])) {
-            $this->instanceName = $options["instanceName"];
+        $this->options = array_merge($this->options, $options);
+
+        if (isset($this->options['enabled']) && $this->options['enabled']) {
+
+            if (!RedisManager::instanceExists($this->options["instanceName"])) {
+                throw new \Exception("Redis instance not running.");
+            }
+
+            if (isset($options["runFor"]) && preg_match('/[1-9][0-9]*/', $options["runFor"])) {
+                $this->options['runFor'] = (int)$options['runFor'];
+            }
+
+            if (isset($options["minCronCount"]) && preg_match('/[1-9][0-9]*/', $options["minCronCount"])) {
+                $this->options['minCronCount'] = (int)$options['minCronCount'];
+            }
+
+            if (isset($options["maxCronCount"]) && preg_match('/[1-9][0-9]*/', $options["maxCronCount"])) {
+                $this->options['maxCronCount'] = (int)$options['maxCronCount'];
+            }
+
+            $this->redis = RedisManager::getInstance($this->options["instanceName"]);
+
+            if (empty($ci)) {
+                $ci = Container::getContainer();
+            }
+
+            $this->ci = $ci;
         }
+    }
 
-        if (isset($options["runFor"]) && preg_match('/[1-9][0-9]*/', $options["runFor"])) {
-            $this->runFor = (int)$options["runFor"];
+    /**
+     * @return \Monolog\Logger
+     */
+    protected function getLogger()
+    {
+        return $this->ci->get("logger");
+    }
+
+    public function decide()
+    {
+        try {
+            $job_count_below_time = $this->redis->zCount($this->queueKey, PHP_INT_MIN, time());
+            $current_running_main_queue_consumers = exec('ps aux | grep jobQueueConsumer | grep decide | grep -v grep | wc -l');
+
+            $main_queue_run_consumers = (int)($job_count_below_time / 10);
+            if ($current_running_main_queue_consumers < $this->options['minCronCount']) {
+                $main_queue_run_consumers += ($this->options['minCronCount'] - $current_running_main_queue_consumers);
+            }
+
+            if ($main_queue_run_consumers + $current_running_main_queue_consumers > $this->options['maxCronCount']) {
+                $main_queue_run_consumers = $this->options['maxCronCount'] - $current_running_main_queue_consumers;
+            }
+
+            for ($i = 0; $i < $main_queue_run_consumers; $i++) {
+                exec('(nohup /usr/bin/php -f ' . realpath(__DIR__) . '' . DIRECTORY_SEPARATOR . $this->options["consumerCronFileName"].' consume 1 > /dev/null 2>&1 ) & echo ${!};');
+            }
+        } catch (\Throwable $e) {
+            $this->getLogger()->addInfo($e->getMessage());
         }
-
-        $this->redis = RedisManager::getInstance($this->instanceName);
-
-        if (empty($ci)) {
-            $ci = Container::getContainer();
-        }
-
-        $this->ci = $ci;
     }
 
     public function consume()
     {
-        $run_for = time() + $this->runFor;
-
-        /* @var \Monolog\Logger $logger */
-        $logger = $this->ci->get("logger");
+        $run_for = time() + $this->options['runFor'];
 
         while (time() <= $run_for) {
             $jobs = $this->redis->zRangeByScore($this->queueKey, PHP_INT_MIN, time());
@@ -83,7 +127,7 @@ class JobQueue
                             $class->getMethod($job["method"])->invokeArgs($object, $job["args"]);
                         }
                     } catch (\Throwable $e) {
-                        $logger->addInfo($e->getMessage());
+                        $this->getLogger()->addInfo($e->getMessage());
                     }
                 }
             } else {
@@ -122,19 +166,16 @@ class JobQueue
             "construct_args" => $construct_args
         ];
 
-        /* @var \Monolog\Logger $logger */
-        $logger = $this->ci->get("logger");
-
         try {
             $class_check = new \ReflectionClass($job["class"]);
         } catch (\ReflectionException $e) {
-            $logger->addNotice($e->getMessage(), array("classname" => $job["class"]));
+            $this->getLogger()->addNotice($e->getMessage(), array("classname" => $job["class"]));
 
             return false;
         }
 
         if (!$class_check->hasMethod($job["method"])) {
-            $logger->addNotice("Method {$job['method']} not found in {$job['class']}", array("classname" => $job["class"], "methodname" => $job["method"]));
+            $this->getLogger()->addNotice("Method {$job['method']} not found in {$job['class']}", array("classname" => $job["class"], "methodname" => $job["method"]));
 
             return false;
         }
@@ -142,7 +183,7 @@ class JobQueue
         $method_check = $class_check->getMethod($job["method"]);
 
         if ($method_check->isPrivate()) {
-            $logger->addNotice("Method is private", array("classname" => $job["class"], "methodname" => $job["method"]));
+            $this->getLogger()->addNotice("Method is private", array("classname" => $job["class"], "methodname" => $job["method"]));
 
             return false;
         }
@@ -168,28 +209,25 @@ class JobQueue
     public function pushJobs()
     {
         if (!empty($this->jobs)) {
-            /* @var \Monolog\Logger $logger */
-            $logger = $this->ci->get("logger");
-
             $multi = $this->redis->multi();
 
             foreach ($this->jobs as $job) {
                 try {
                     $class_check = new \ReflectionClass($job["class"]);
                 } catch (\ReflectionException $e) {
-                    $logger->addNotice($e->getMessage(), array("classname" => $job["class"]));
+                    $this->getLogger()->addNotice($e->getMessage(), array("classname" => $job["class"]));
                     continue;
                 }
 
                 if (!$class_check->hasMethod($job["method"])) {
-                    $logger->addNotice("Method {$job['method']} not found in {$job['class']}", array("classname" => $job["class"], "methodname" => $job["method"]));
+                    $this->getLogger()->addNotice("Method {$job['method']} not found in {$job['class']}", array("classname" => $job["class"], "methodname" => $job["method"]));
                     continue;
                 }
 
                 $method_check = $class_check->getMethod($job["method"]);
 
                 if ($method_check->isPrivate()) {
-                    $logger->addNotice("Method is private", array("classname" => $job["class"], "methodname" => $job["method"]));
+                    $this->getLogger()->addNotice("Method is private", array("classname" => $job["class"], "methodname" => $job["method"]));
                     continue;
                 }
 

@@ -35,8 +35,11 @@ return [
         ],
 
         'jobQueue' => [
+            'enabled'      => true,
             'instanceName' => 'default',
             'runFor'       => 60,
+            'minCronCount' => 1,
+            'maxCronCount' => 10
         ],
 
         'db' => [
