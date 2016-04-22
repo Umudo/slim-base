@@ -56,7 +56,7 @@ class JobQueue
     {
         $this->options = array_merge($this->options, $options);
 
-        if (isset($this->options['enabled']) && $this->options['enabled']) {
+        if (isset($this->options['enabled']) && $this->options['enabled'] === true) {
 
             if (isset($options["runFor"]) && preg_match('/[1-9][0-9]*/', $options["runFor"])) {
                 $this->options['runFor'] = (int)$options['runFor'];
@@ -94,56 +94,60 @@ class JobQueue
 
     public function decide()
     {
-        try {
-            $job_count_below_time = $this->redis->zCount($this->queueKey, PHP_INT_MIN, time());
-            $current_running_queue_consumers = exec('ps aux | grep jobQueueConsumer | grep decide | grep -v grep | wc -l');
+        if ($this->options['enabled']) {
+            try {
+                $job_count_below_time = $this->redis->zCount($this->queueKey, PHP_INT_MIN, time());
+                $current_running_queue_consumers = exec('ps aux | grep jobQueueConsumer | grep decide | grep -v grep | wc -l');
 
-            $start_new_count = (int)($job_count_below_time / $this->options['maxJobFetch']);
-            if ($current_running_queue_consumers < $this->options['minCronCount']) {
-                $start_new_count += ($this->options['minCronCount'] - $current_running_queue_consumers);
-            }
+                $start_new_count = (int)($job_count_below_time / $this->options['maxJobFetch']);
+                if ($current_running_queue_consumers < $this->options['minCronCount']) {
+                    $start_new_count += ($this->options['minCronCount'] - $current_running_queue_consumers);
+                }
 
-            if ($start_new_count + $current_running_queue_consumers > $this->options['maxCronCount']) {
-                $start_new_count = $this->options['maxCronCount'] - $current_running_queue_consumers;
-            }
+                if ($start_new_count + $current_running_queue_consumers > $this->options['maxCronCount']) {
+                    $start_new_count = $this->options['maxCronCount'] - $current_running_queue_consumers;
+                }
 
-            for ($i = 0; $i < $start_new_count; $i++) {
-                exec('(nohup '.$this->options['pathToPhp'].' -f ' . realpath(__DIR__) . '/../../cron/' . $this->options["consumerCronFileName"].' consume 1 > /dev/null 2>&1 ) & echo ${!};');
+                for ($i = 0; $i < $start_new_count; $i++) {
+                    exec('(nohup ' . $this->options['pathToPhp'] . ' -f ' . realpath(__DIR__) . '/../../cron/' . $this->options["consumerCronFileName"] . ' consume 1 > /dev/null 2>&1 ) & echo ${!};');
+                }
+            } catch (\Throwable $e) {
+                $this->getLogger()->addError($e);
             }
-        } catch (\Throwable $e) {
-            $this->getLogger()->addError($e);
         }
     }
 
     public function consume()
     {
-        $run_for = time() + $this->options['runFor'];
+        if ($this->options['enabled']) {
+            $run_for = time() + $this->options['runFor'];
 
-        while (time() <= $run_for) {
-            $multi = $this->redis->multi(\Redis::MULTI);
-            $multi->zRange($this->queueKey,0, $this->options['maxJobFetch']);
-            $multi->zRemRangeByRank($this->queueKey, 0, $this->options['maxJobFetch']);
-            $result = $multi->exec();
+            while (time() <= $run_for) {
+                $multi = $this->redis->multi(\Redis::MULTI);
+                $multi->zRange($this->queueKey, 0, $this->options['maxJobFetch']);
+                $multi->zRemRangeByRank($this->queueKey, 0, $this->options['maxJobFetch']);
+                $result = $multi->exec();
 
-            $jobs = $result[0];
+                $jobs = $result[0];
 
-            if (!empty($jobs)) {
-                foreach ($jobs as $job) {
-                    try {
-                        $job = unserialize($job);
-                        if ($job["isStatic"]) {
-                            call_user_func_array([$job["class"], $job["method"]], $job["args"]);
-                        } else {
-                            $class = new \ReflectionClass($job["class"]);
-                            $object = $class->newInstanceArgs($job["constructor_args"]);
-                            $class->getMethod($job["method"])->invokeArgs($object, $job["args"]);
+                if (!empty($jobs)) {
+                    foreach ($jobs as $job) {
+                        try {
+                            $job = unserialize($job);
+                            if ($job["isStatic"]) {
+                                call_user_func_array([$job["class"], $job["method"]], $job["args"]);
+                            } else {
+                                $class = new \ReflectionClass($job["class"]);
+                                $object = $class->newInstanceArgs($job["constructor_args"]);
+                                $class->getMethod($job["method"])->invokeArgs($object, $job["args"]);
+                            }
+                        } catch (\Throwable $e) {
+                            $this->getLogger()->addNotice($e);
                         }
-                    } catch (\Throwable $e) {
-                        $this->getLogger()->addNotice($e);
                     }
+                } else {
+                    sleep(3);
                 }
-            } else {
-                sleep(1);
             }
         }
     }
@@ -177,6 +181,10 @@ class JobQueue
      */
     public function addJobNow($class, $method, $args = [], $delay = 0, $construct_args = [])
     {
+        if(!$this->options['enabled']) {
+            return false;
+        }
+
         $job = [
             "class"          => $class,
             "method"         => $method,
@@ -227,7 +235,7 @@ class JobQueue
 
     public function pushJobs()
     {
-        if (!empty($this->jobs)) {
+        if (!empty($this->jobs) && $this->options['enabled']) {
             $multi = $this->redis->multi();
 
             foreach ($this->jobs as $job) {
