@@ -97,7 +97,7 @@ class JobQueue
         if ($this->options['enabled']) {
             try {
                 $job_count_below_time = $this->redis->zCount($this->queueKey, PHP_INT_MIN, time());
-                $current_running_queue_consumers = exec('ps aux | grep jobQueueConsumer | grep decide | grep -v grep | wc -l');
+                $current_running_queue_consumers = exec('ps aux | grep jobQueueConsumer | grep consume | grep -v grep | wc -l');
 
                 $start_new_count = (int)($job_count_below_time / $this->options['maxJobFetch']);
                 if ($current_running_queue_consumers < $this->options['minCronCount']) {
