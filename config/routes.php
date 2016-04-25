@@ -122,7 +122,12 @@ $app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function 
         return $notFoundHandler($request, $response);
     }
 
-    $action_response = call_user_func_array([$class, $full_action_name], $args['parameters'] ?? array());
+    $params = array();
+    if (!empty($args['parameters'])) {
+        $params = explode('/', $args['parameters']);
+    }
+
+    $action_response = call_user_func_array([$class, $full_action_name], $params);
 
     if ($action_response instanceof \Psr\Http\Message\ResponseInterface) {
         $response = $action_response;
