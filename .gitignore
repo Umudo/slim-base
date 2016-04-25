@@ -1,4 +1,5 @@
 vendor/*
 logs/*
 .idea/
+composer.lock
 README.md
