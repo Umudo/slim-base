@@ -83,7 +83,7 @@ $container['errorHandler'] = function ($c) {
             $logger->notice($text);
         }
 
-        $errorHandler = new \Slim\Handlers\PhpError(true); //We pass true here so the error_log will remain empty.
+        $errorHandler = new \Slim\Handlers\PhpError($c->get('settings')['displayErrorDetails']);
 
         return $errorHandler($request, $response, $error);
     };
