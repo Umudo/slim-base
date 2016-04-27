@@ -34,7 +34,7 @@ abstract class Controller
         $this->response = $response;
     }
 
-    protected function renderView(ResponseInterface $response, string $filename, array $data)
+    protected function renderView(ResponseInterface $response, string $filename, array $data = [])
     {
         return $this->container->get('view')->render($response, $filename, $data);
     }
