@@ -27,15 +27,25 @@ abstract class Controller
      */
     protected $response;
 
+    protected $data;
+
     public function __construct(ContainerInterface $container, ServerRequestInterface $request, ResponseInterface $response)
     {
         $this->container = $container;
         $this->request = $request;
         $this->response = $response;
+        $this->data = [];
     }
 
-    protected function renderView(ResponseInterface $response, string $filename, array $data = [])
+    public function wantsJson()
     {
-        return $this->container->get('view')->render($response, $filename, $data);
+        $acceptHeaders = $this->request->getHeader('Accept');
+
+        return $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest' || (!empty($acceptHeaders) && preg_match('/application\/.*\+?json/', $acceptHeaders[0]));
+    }
+
+    protected function renderView(ResponseInterface $response, string $filename)
+    {
+        return $this->container->get('view')->render($response, $filename, $this->data);
     }
 }

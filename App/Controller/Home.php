@@ -15,7 +15,8 @@ class Home extends Controller
 {
     public function indexAction()
     {
-        $this->renderView($this->response, 'test.php', ['test' => 'View Render Test']);
+        $this->data = ['test' => 'View Render Test'];
+        $this->renderView($this->response, 'test.php');
     }
 
     public function exampleStringAction()

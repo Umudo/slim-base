@@ -6,25 +6,12 @@ use App\ConnectionManager\RedisManager;
 use App\Helper\Container;
 use Interop\Container\ContainerInterface;
 
-/**
- * Class JobQueue
- * @package App\Queue
- *
- * This class uses redis as a backend to push jobs.
- * Jobs are class methods that are either static or object methods.
- *
- * The delay parameter when pushing jobs indicates when the job should be run, if you provide a low value the job would
- * run sooner. It can be thought as insignificance of the job, rather than priority.
- *
- * For this to run properly you must add the provided script jobQueueConsumer.php as a cron job running every minute or
- * so.
- */
 class JobQueue
 {
     /**
      * @var string
      */
-    protected $queueKey = "jobqueue";
+    protected $queueKey = 'jobqueue';
 
     /**
      * @var array
@@ -49,7 +36,7 @@ class JobQueue
         'minCronCount'         => 1,
         'maxCronCount'         => 2,
         'pathToPhp'            => '/usr/local/bin/php',
-        'consumerCronFileName' => 'jobQueueConsumer.php'
+        'consumerCronFileName' => 'jobQueueConsumer.php',
     ];
 
     public function __construct(array $options = [], ContainerInterface $ci = null)
@@ -57,16 +44,15 @@ class JobQueue
         $this->options = array_merge($this->options, $options);
 
         if (isset($this->options['enabled']) && $this->options['enabled'] === true) {
-
-            if (isset($options["runFor"]) && preg_match('/[1-9][0-9]*/', $options["runFor"])) {
+            if (isset($options['runFor']) && preg_match('/[1-9][0-9]*/', $options['runFor'])) {
                 $this->options['runFor'] = (int)$options['runFor'];
             }
 
-            if (isset($options["minCronCount"]) && preg_match('/[1-9][0-9]*/', $options["minCronCount"])) {
+            if (isset($options['minCronCount']) && preg_match('/[1-9][0-9]*/', $options['minCronCount'])) {
                 $this->options['minCronCount'] = (int)$options['minCronCount'];
             }
 
-            if (isset($options["maxCronCount"]) && preg_match('/[1-9][0-9]*/', $options["maxCronCount"])) {
+            if (isset($options['maxCronCount']) && preg_match('/[1-9][0-9]*/', $options['maxCronCount'])) {
                 $this->options['maxCronCount'] = (int)$options['maxCronCount'];
             }
 
@@ -74,7 +60,7 @@ class JobQueue
                 throw new \Exception('minCronCount can not be higher than maxCronCount');
             }
 
-            $this->redis = RedisManager::getInstance($this->options["instanceName"]);
+            $this->redis = RedisManager::getInstance($this->options['instanceName']);
 
             if (empty($ci)) {
                 $ci = Container::getContainer();
@@ -89,7 +75,7 @@ class JobQueue
      */
     protected function getLogger()
     {
-        return $this->ci->get("logger");
+        return $this->ci->get('logger');
     }
 
     public function decide()
@@ -108,8 +94,8 @@ class JobQueue
                     $start_new_count = $this->options['maxCronCount'] - $current_running_queue_consumers;
                 }
 
-                for ($i = 0; $i < $start_new_count; $i++) {
-                    exec('(nohup ' . $this->options['pathToPhp'] . ' -f ' . realpath(__DIR__) . '/../../cron/' . $this->options["consumerCronFileName"] . ' consume 1 > /dev/null 2>&1 ) & echo ${!};');
+                for ($i = 0; $i < $start_new_count; ++$i) {
+                    exec('(nohup ' . $this->options['pathToPhp'] . ' -f ' . realpath(__DIR__) . '/../../cron/' . $this->options['consumerCronFileName'] . ' consume > /dev/null 2>&1 ) & echo ${!};');
                 }
             } catch (\Throwable $e) {
                 $this->getLogger()->addError($e);
@@ -134,12 +120,12 @@ class JobQueue
                     foreach ($jobs as $job) {
                         try {
                             $job = unserialize($job);
-                            if ($job["isStatic"]) {
-                                call_user_func_array([$job["class"], $job["method"]], $job["args"]);
+                            if ($job['isStatic']) {
+                                call_user_func_array([$job['class'], $job['method']], $job['args']);
                             } else {
-                                $class = new \ReflectionClass($job["class"]);
-                                $object = $class->newInstanceArgs($job["constructor_args"]);
-                                $class->getMethod($job["method"])->invokeArgs($object, $job["args"]);
+                                $class = new \ReflectionClass($job['class']);
+                                $object = $class->newInstanceArgs($job['constructor_args']);
+                                $class->getMethod($job['method'])->invokeArgs($object, $job['args']);
                             }
                         } catch (\Throwable $e) {
                             $this->getLogger()->addNotice($e);
@@ -153,120 +139,124 @@ class JobQueue
     }
 
     /**
-     * @param string $class Full name of the class (with namespaces)
-     * @param string $method method name (static or normal)
-     * @param array  $args method arguments as an array
-     * @param int    $delay higher values will be executed later than the lower ones.
+     * @param string $class          Full name of the class (with namespaces)
+     * @param string $method         method name (static or normal)
+     * @param array  $args           method arguments as an array
+     * @param int    $delay          higher values will be executed later than the lower ones.
      * @param array  $construct_args if the method is not static and you need to provide __constructor arguments.
      */
     public function addJob($class, $method, $args = [], $delay = 0, $construct_args = [])
     {
         $this->jobs[] = [
-            "class"          => $class,
-            "method"         => $method,
-            "args"           => $args,
-            "delay"          => $delay,
-            "construct_args" => $construct_args
+            'class'          => $class,
+            'method'         => $method,
+            'args'           => $args,
+            'delay'          => $delay,
+            'construct_args' => $construct_args,
         ];
     }
 
     /**
-     * @param string $class Full name of the class (with namespaces)
-     * @param string $method method name (static or normal)
-     * @param array  $args method arguments as an array
-     * @param int    $delay higher values will be executed later than the lower ones.
+     * @param string $class          Full name of the class (with namespaces)
+     * @param string $method         method name (static or normal)
+     * @param array  $args           method arguments as an array
+     * @param int    $delay          higher values will be executed later than the lower ones.
      * @param array  $construct_args if the method is not static and you need to provide __constructor arguments.
      *
      * @return bool
      */
     public function addJobNow($class, $method, $args = [], $delay = 0, $construct_args = [])
     {
-        if(!$this->options['enabled']) {
+        if (!$this->options['enabled']) {
             return false;
         }
 
         $job = [
-            "class"          => $class,
-            "method"         => $method,
-            "args"           => $args,
-            "delay"          => $delay,
-            "construct_args" => $construct_args
+            'class'          => $class,
+            'method'         => $method,
+            'args'           => $args,
+            'delay'          => $delay,
+            'construct_args' => $construct_args,
         ];
 
         try {
-            $class_check = new \ReflectionClass($job["class"]);
+            $class_check = new \ReflectionClass($job['class']);
         } catch (\ReflectionException $e) {
-            $this->getLogger()->addNotice($e, array("classname" => $job["class"]));
+            $this->getLogger()->addNotice($e, array('classname' => $job['class']));
 
             return false;
         }
 
-        if (!$class_check->hasMethod($job["method"])) {
-            $this->getLogger()->addNotice("Method {$job['method']} not found in {$job['class']}", array("classname" => $job["class"], "methodname" => $job["method"]));
+        if (!$class_check->hasMethod($job['method'])) {
+            $this->getLogger()->addNotice("Method {$job['method']} not found in {$job['class']}", array('classname' => $job['class'], 'methodname' => $job['method']));
 
             return false;
         }
 
-        $method_check = $class_check->getMethod($job["method"]);
+        $method_check = $class_check->getMethod($job['method']);
 
         if ($method_check->isPrivate()) {
-            $this->getLogger()->addNotice("Method is private", array("classname" => $job["class"], "methodname" => $job["method"]));
+            $this->getLogger()->addNotice('Method is private', array('classname' => $job['class'], 'methodname' => $job['method']));
 
             return false;
         }
 
-        $job["isStatic"] = $method_check->isStatic();
+        $job['isStatic'] = $method_check->isStatic();
 
-        if ($job["isStatic"]) {
-            unset($job["construct_args"]);
+        if ($job['isStatic']) {
+            unset($job['construct_args']);
         }
 
-        $job["pk"] = $this->generateKeyForJob();
+        $job['pk'] = $this->generateKeyForJob();
 
-        $this->redis->zAdd($this->queueKey, time() + $job["delay"], serialize($job));
+        $this->redis->zAdd($this->queueKey, time() + $job['delay'], serialize($job));
 
         return true;
     }
 
     protected function generateKeyForJob()
     {
-        return "t" . time() . "r" . random_int(PHP_INT_MIN, PHP_INT_MAX);
+        return 't' . time() . 'r' . random_int(PHP_INT_MIN, PHP_INT_MAX);
     }
 
     public function pushJobs()
     {
         if (!empty($this->jobs) && $this->options['enabled']) {
-            $multi = $this->redis->multi();
+            $multi = $this->redis->multi(\Redis::PIPELINE);
 
             foreach ($this->jobs as $job) {
                 try {
-                    $class_check = new \ReflectionClass($job["class"]);
-                } catch (\ReflectionException $e) {
-                    $this->getLogger()->addNotice($e, array("classname" => $job["class"]));
-                    continue;
+                    try {
+                        $class_check = new \ReflectionClass($job['class']);
+                    } catch (\ReflectionException $e) {
+                        $this->getLogger()->addNotice($e, array('classname' => $job['class']));
+                        continue;
+                    }
+
+                    if (!$class_check->hasMethod($job['method'])) {
+                        $this->getLogger()->addNotice("Method {$job['method']} not found in {$job['class']}", array('classname' => $job['class'], 'methodname' => $job['method']));
+                        continue;
+                    }
+
+                    $method_check = $class_check->getMethod($job['method']);
+
+                    if ($method_check->isPrivate()) {
+                        $this->getLogger()->addNotice('Method is private', array('classname' => $job['class'], 'methodname' => $job['method']));
+                        continue;
+                    }
+
+                    $job['isStatic'] = $method_check->isStatic();
+
+                    if ($job['isStatic']) {
+                        unset($job['construct_args']);
+                    }
+
+                    $job['pk'] = $this->generateKeyForJob();
+
+                    $multi->zAdd($this->queueKey, time() + $job['delay'], serialize($job));
+                } catch (\Throwable $e) {
+                    $this->getLogger()->addInfo($e);
                 }
-
-                if (!$class_check->hasMethod($job["method"])) {
-                    $this->getLogger()->addNotice("Method {$job['method']} not found in {$job['class']}", array("classname" => $job["class"], "methodname" => $job["method"]));
-                    continue;
-                }
-
-                $method_check = $class_check->getMethod($job["method"]);
-
-                if ($method_check->isPrivate()) {
-                    $this->getLogger()->addNotice("Method is private", array("classname" => $job["class"], "methodname" => $job["method"]));
-                    continue;
-                }
-
-                $job["isStatic"] = $method_check->isStatic();
-
-                if ($job["isStatic"]) {
-                    unset($job["construct_args"]);
-                }
-
-                $job["pk"] = $this->generateKeyForJob();
-
-                $multi->zAdd($this->queueKey, time() + $job["delay"], serialize($job));
             }
 
             $multi->exec();

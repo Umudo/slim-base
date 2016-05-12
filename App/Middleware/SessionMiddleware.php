@@ -2,11 +2,9 @@
 
 namespace App\Middleware;
 
-use Psr\Http\Message\{
-    ServerRequestInterface, ResponseInterface
-};
-
-use \App\Session;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use App\Session;
 
 final class SessionMiddleware
 {
@@ -17,9 +15,8 @@ final class SessionMiddleware
         'domain'                        => null,
         'secure'                        => false,
         'httponly'                      => true,
-        'updateLifetimeWithEachRequest' => true
+        'updateLifetimeWithEachRequest' => true,
     ];
-
 
     public function __construct($options = [])
     {
@@ -33,9 +30,9 @@ final class SessionMiddleware
 
         $response = $next($request, $response);
 
-        if ($this->options["updateLifetimeWithEachRequest"] === true) {
+        if ($this->options['updateLifetimeWithEachRequest'] === true) {
             //Update session cookie lifetime.
-            setcookie(session_name(), session_id(), time() + $this->options["lifetime"], $this->options["path"], $this->options["domain"], $this->options["secure"], $this->options["httponly"]);
+            setcookie(session_name(), session_id(), time() + $this->options['lifetime'], $this->options['path'], $this->options['domain'], $this->options['secure'], $this->options['httponly']);
         }
 
         return $response;
@@ -43,15 +40,14 @@ final class SessionMiddleware
 
     private function checkSession(ServerRequestInterface $request)
     {
-        $userAgent = Session::get("userAgent");
+        $userAgent = Session::get('userAgent');
 
-        if (hash('sha256', $request->getHeader("HTTP_USER_AGENT")[0]) !== $userAgent) {
+        if (hash('sha256', $request->getHeader('HTTP_USER_AGENT')[0]) !== $userAgent) {
             Session::destroy();
 
             $this->start($request);
             Session::regenerate(true);
         }
-
     }
 
     private function start(ServerRequestInterface $request)
@@ -62,17 +58,16 @@ final class SessionMiddleware
 
         $current = session_get_cookie_params();
 
-        $this->options["lifetime"] = (int)($this->options['lifetime'] ?? $current['lifetime']);
-        $this->options["path"] = $this->options['path'] ?? $current['path'];
-        $this->options["domain"] = $this->options['domain'] ?? $current['domain'];
-        $this->options["secure"] = (bool)$this->options['secure'];
-        $this->options["httponly"] = (bool)$this->options['httponly'];
-        session_set_cookie_params($this->options["lifetime"], $this->options["path"], $this->options["domain"], $this->options["secure"], $this->options["httponly"]); //Initialize session cookie. 
-        session_name($this->options["name"]);
+        $this->options['lifetime'] = (int)($this->options['lifetime'] ?? $current['lifetime']);
+        $this->options['path'] = $this->options['path'] ?? $current['path'];
+        $this->options['domain'] = $this->options['domain'] ?? $current['domain'];
+        $this->options['secure'] = (bool)$this->options['secure'];
+        $this->options['httponly'] = (bool)$this->options['httponly'];
+        session_set_cookie_params($this->options['lifetime'], $this->options['path'], $this->options['domain'], $this->options['secure'], $this->options['httponly']); //Initialize session cookie.
+        session_name($this->options['name']);
         session_cache_limiter(false); //http://docs.slimframework.com/#Sessions
         session_start();
 
-        Session::set('userAgent', hash('sha256', $request->getHeader("HTTP_USER_AGENT")[0]));
+        Session::set('userAgent', hash('sha256', $request->getHeader('HTTP_USER_AGENT')[0]));
     }
-
 }
