@@ -41,6 +41,8 @@ $container['jobQueue'] = function ($c) {
      */
     $options = $c->get('settings')["jobQueue"];
 
+    $options['pathToPhp'] = $c->get('settings')['pathToPhp'];
+
     return new \App\Queue\JobQueue($options, $c);
 };
 

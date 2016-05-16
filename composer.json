@@ -8,6 +8,7 @@
     "slim/php-view": "^2.1",
     "monolog/monolog": "^1.18",
     "mongodb/mongodb": "^1.0.0",
-    "ext-redis": "*"
+    "ext-redis": "*",
+    "mtdowling/cron-expression": "^1.1"
   }
 }

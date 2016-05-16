@@ -8,6 +8,7 @@ return [
         'default_controller'                => 'Home',
         'default_action'                    => 'index',
         'action_suffix'                     => 'Action',
+        'pathToPhp'                         => '/usr/local/bin/php',
 
         'session' => [
             //Session settings
@@ -36,13 +37,17 @@ return [
 
         'jobQueue' => [
             'enabled'              => true,
-            'instanceName'         => 'default',
+            'redisInstanceName'    => 'default',
             'runFor'               => 60,
             'maxJobFetch'          => 10000,
             'minCronCount'         => 1,
             'maxCronCount'         => 2,
-            'pathToPhp'            => '/usr/local/bin/php',
             'consumerCronFileName' => 'jobQueueConsumer.php'
+        ],
+
+        'taskRunner' => [
+            'enabled'           => true,
+            'redisInstanceName' => 'default',
         ],
 
         'db' => [

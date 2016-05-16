@@ -30,7 +30,7 @@ class JobQueue
 
     protected $options = [
         'enabled'              => false,
-        'instanceName'         => 'default',
+        'redisInstanceName'    => 'default',
         'runFor'               => 60,
         'maxJobFetch'          => 10000,
         'minCronCount'         => 1,
@@ -60,7 +60,7 @@ class JobQueue
                 throw new \Exception('minCronCount can not be higher than maxCronCount');
             }
 
-            $this->redis = RedisManager::getInstance($this->options['instanceName']);
+            $this->redis = RedisManager::getInstance($this->options['redisInstanceName']);
 
             if (empty($ci)) {
                 $ci = Container::getContainer();

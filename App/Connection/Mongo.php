@@ -57,6 +57,14 @@ class Mongo extends Connection
     }
 
     /**
+     * @return Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
      * @param string $db
      *
      * @throws \Exception
