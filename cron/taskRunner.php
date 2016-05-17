@@ -3,7 +3,7 @@ include 'base.php';
 
 $will_check_continuous_task_for = 56;
 
-$settings = \App\Helper\Container::getContainer()->get('settings')['task'];
+$settings = \App\Helper\Container::getContainer()->get('settings')['taskRunner'];
 
 if (!$settings['enabled']) {
     die("Task Component is not enabled");
