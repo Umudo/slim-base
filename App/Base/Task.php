@@ -47,7 +47,7 @@ abstract class Task implements TaskInterface
         }
     }
 
-    function start()
+    public function start()
     {
         $this->updateCheckTime();
         $this->run();
