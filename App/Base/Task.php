@@ -41,7 +41,7 @@ abstract class Task implements TaskInterface
     protected function updateCheckTime()
     {
         try {
-            RedisManager::getInstance(Container::getContainer()->get("settings")['task']['redisInstanceName'])->setex($this->rk, $this->rk_timeout, time());
+            RedisManager::getInstance(Container::getContainer()->get("settings")['taskRunner']['redisInstanceName'])->setex($this->rk, $this->rk_timeout, time());
         } catch (\Throwable $e) {
             Container::getLogger()->addCritical($e);
         }
