@@ -117,7 +117,7 @@ function scanAvailableTasks()
         if (stripos($task_class_file, ".php") === false) {
             continue;
         }
-        $task_class_file = '\\App\\Task\\' . substr($task_class_file, 0, -4);
+        $task_class_file = 'App\\Task\\' . substr($task_class_file, 0, -4);
         $task_class_files[] = $task_class_file;
     }
 
