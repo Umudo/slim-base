@@ -13,9 +13,11 @@ if (!$settings['enabled']) {
 
 if (isset($argv[1]) && $argv[1] == "runTask") {
     $class = $argv[2];
-    $class = new $class;
     /* @var $class \App\Base\Task */
-    $class->start();
+    $class = new $class();
+    if ($class->isActive()) {
+        $class->start();
+    }
 } else {
     $run_tasks_at_the_end_of_minute = array();
     $run_continuous_tasks = array();

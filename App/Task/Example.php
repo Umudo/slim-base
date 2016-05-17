@@ -9,7 +9,7 @@ class Example extends Task
     /**
      * @return bool
      */
-    protected function isActive() : bool
+    public function isActive() : bool
     {
         return true;
     }
@@ -17,7 +17,7 @@ class Example extends Task
     /**
      * @return bool
      */
-    protected function isLogEnabled() : bool
+    public function isLogEnabled() : bool
     {
         return true;
     }
