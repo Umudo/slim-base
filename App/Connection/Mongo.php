@@ -65,6 +65,14 @@ class Mongo extends Connection
     }
 
     /**
+     * @return Database
+     */
+    public function getDatabase()
+    {
+        return $this->db;
+    }
+
+    /**
      * @param string $db
      *
      * @throws \Exception
