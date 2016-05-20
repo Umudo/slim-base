@@ -13,12 +13,12 @@ abstract class Task implements TaskInterface
     /**
      * @return bool
      */
-    abstract protected function isActive() : bool;
+    abstract public function isActive() : bool;
 
     /**
      * @return bool
      */
-    abstract protected function isLogEnabled() : bool;
+    abstract public function isLogEnabled() : bool;
 
     abstract protected function run();
 
