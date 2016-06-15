@@ -124,7 +124,7 @@ class JobQueue
                                 call_user_func_array([$job['class'], $job['method']], $job['args']);
                             } else {
                                 $class = new \ReflectionClass($job['class']);
-                                $object = $class->newInstanceArgs($job['constructor_args']);
+                                $object = $class->newInstanceArgs($job['construct_args']);
                                 $class->getMethod($job['method'])->invokeArgs($object, $job['args']);
                             }
                         } catch (\Throwable $e) {
