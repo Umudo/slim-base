@@ -67,7 +67,7 @@ $app->map(['GET', 'POST'], '/[{controller}]', function (Psr\Http\Message\ServerR
             if ($settings["production"]) {
                 $response->getBody()->write("");
             } else {
-                $response->getBody()->write("`" . __FILE__ . "` on line " . __LINE__ . ": Return type is not valid in `{$full_class_name}` `{$full_action_name}`");
+                $response->getBody()->write("`" . __FILE__ . "` on line " . __LINE__ . ": Return type is not valid in `{$full_class_name}` `{$full_default_action_name}`");
             }
         }
     }
