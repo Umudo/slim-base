@@ -6,7 +6,7 @@ $will_check_continuous_task_for = 56;
 $settings = \App\Helper\Container::getContainer()->get('settings')['taskRunner'];
 $settings['pathToPhp'] = \App\Helper\Container::getContainer()->get('settings')['pathToPhp'];
 
-$path = explode("/", trim(__DIR__, "/"));
+$path = explode("/", trim(realpath(__DIR__), "/"));
 $basePathFolderName = $path[count($path) - 2];
 
 if (!$settings['enabled']) {
