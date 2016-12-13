@@ -6,6 +6,9 @@ $will_check_continuous_task_for = 56;
 $settings = \App\Helper\Container::getContainer()->get('settings')['taskRunner'];
 $settings['pathToPhp'] = \App\Helper\Container::getContainer()->get('settings')['pathToPhp'];
 
+$path = explode("/", trim(__DIR__, "/"));
+$basePathFolderName = $path[count($path) - 2];
+
 if (!$settings['enabled']) {
     die("Task Component is not enabled");
 }
@@ -14,7 +17,8 @@ if (!$settings['enabled']) {
 if (isset($argv[1]) && $argv[1] == "runTask") {
     $class = $argv[2];
     /* @var $class \App\Base\Task */
-    $class = new $class();
+    $class = new $class;
+
     if ($class->isActive()) {
         $class->start();
     }
@@ -41,7 +45,7 @@ if (isset($argv[1]) && $argv[1] == "runTask") {
         //is timed task
         if (isset($schedule['runEvery'])) {
             if (isset($schedule['killWhenNotActiveFor'])) {
-                checkRuntimeAndKill($available_task, $schedule['killWhenNotActiveFor'], $settings['redisInstanceName']);
+                checkRuntimeAndKill($available_task, $schedule['killWhenNotActiveFor'], $settings['redisInstanceName'], $basePathFolderName);
             }
 
             if (!\Cron\CronExpression::isValidExpression($schedule['runEvery'])) {
@@ -67,10 +71,10 @@ if (isset($argv[1]) && $argv[1] == "runTask") {
 
         foreach ($run_continuous_tasks as $class_name => $schedule) {
             if (isset($schedule['killWhenNotActiveFor'])) {
-                checkRuntimeAndKill($class_name, $schedule['killWhenNotActiveFor'], $settings['redisInstanceName']);
+                checkRuntimeAndKill($class_name, $schedule['killWhenNotActiveFor'], $settings['redisInstanceName'], $basePathFolderName);
             }
 
-            $output = exec("ps aux | grep taskRunner | grep -F '$class_name' | grep -v grep | wc -l");
+            $output = exec("ps aux | grep taskRunner | grep '$basePathFolderName' | grep -F '$class_name' | grep -v grep | wc -l");
             $runCount = $schedule['activeProcessCount'] - $output;
 
             for ($i = 0; $i < $runCount; $i++) {
@@ -91,13 +95,13 @@ if (isset($argv[1]) && $argv[1] == "runTask") {
 }
 
 
-function checkRuntimeAndKill($class_name, $killWhenNotActiveFor, $redisInstanceName)
+function checkRuntimeAndKill($class_name, $killWhenNotActiveFor, $redisInstanceName, $basePathFolderName)
 {
-    exec("ps aux | grep taskRunner | grep -F '$class_name' | grep -v grep | awk {'print $2'}", $output);
+    exec("ps aux | grep taskRunner | grep '$basePathFolderName' | grep -F '$class_name' | grep -v grep | awk {'print $2'}", $output);
     if (!empty($output)) {
         foreach ($output as $pid) {
             try {
-                $last_check_time = \App\ConnectionManager\RedisManager::getInstance($redisInstanceName)->get("task:update_check_time:class:" . $class_name . "pid:" . $pid);
+                $last_check_time = \App\ConnectionManager\RedisManager::getInstance($redisInstanceName)->get("task:update_check_time:class:" . $class_name . ":pid:" . $pid);
 
                 $ts_kill_when_not_active_for = strtotime($killWhenNotActiveFor, 0);
                 if (time() - $ts_kill_when_not_active_for > $last_check_time) {
