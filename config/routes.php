@@ -1,6 +1,6 @@
 <?php
 
-$app->map(['GET', 'POST'], '/[{controller}]', function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\Message\ResponseInterface $response, $args) {
+$app->map(['GET', 'POST'], '/[{controller}]', function (Slim\Http\Request $request, Slim\Http\Response $response, $args) {
     // $this here is the Dependency Injection Container.
 
     $settings = $this->get('settings');
@@ -58,7 +58,7 @@ $app->map(['GET', 'POST'], '/[{controller}]', function (Psr\Http\Message\ServerR
         $response->getBody()->write($action_response);
     } else if (is_array($action_response)) {
         if ($class->wantsJson()) {
-            $response->withJSON($action_response);
+            $response = $response->withJson($action_response);
         } else {
             $response->getBody()->write(json_encode($action_response));
         }
@@ -75,7 +75,7 @@ $app->map(['GET', 'POST'], '/[{controller}]', function (Psr\Http\Message\ServerR
     return $response;
 });
 
-$app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\Message\ResponseInterface $response, $args) {
+$app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function (Slim\Http\Request $request, Slim\Http\Response $response, $args) {
     // $this here is the Dependency Injection Container.
 
     $controller_name = ucwords(strtolower($args['controller']));
@@ -139,7 +139,7 @@ $app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function 
         $response->getBody()->write($action_response);
     } else if (is_array($action_response)) {
         if ($class->wantsJson()) {
-            $response->withJSON($action_response);
+            $response = $response->withJson($action_response);
         } else {
             $response->getBody()->write(json_encode($action_response));
         }
