@@ -8,7 +8,7 @@ return [
         'default_controller'                => 'Home',
         'default_action'                    => 'index',
         'action_suffix'                     => 'Action',
-        'pathToPhp'                         => '/usr/local/bin/php',
+        'pathToPhp'                         => defined('PHP_BINARY') ? escapeshellarg(PHP_BINARY) : '/usr/local/bin/php',
 
         'session' => [
             //Session settings
