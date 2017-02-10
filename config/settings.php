@@ -18,13 +18,13 @@ return [
             'domain'                        => null,
             'secure'                        => false,
             'httponly'                      => true,
-            'updateLifetimeWithEachRequest' => true
+            'updateLifetimeWithEachRequest' => true,
         ],
 
         'renderer' => [
             //PHP-View settings
             'views_path'         => __DIR__ . '/../views/',
-            'template_file_name' => 'template.php'
+            'template_file_name' => 'template.php',
         ],
 
         'logger' => [
@@ -42,7 +42,7 @@ return [
             'maxJobFetch'          => 10000,
             'minCronCount'         => 1,
             'maxCronCount'         => 2,
-            'consumerCronFileName' => 'jobQueueConsumer.php'
+            'consumerCronFileName' => 'jobQueueConsumer.php',
         ],
 
         'taskRunner' => [
@@ -66,11 +66,11 @@ return [
                         'typeMap' => [
                             'array'    => 'array',
                             'document' => 'array',
-                            'root'     => 'array'
-                        ]
+                            'root'     => 'array',
+                        ],
                     ],
-                    'database'      => 'databaseName'
-                ]
+                    'database'      => 'databaseName',
+                ],
             ],
 
             'redis' => [
@@ -79,9 +79,19 @@ return [
                     'port'       => 6379,
                     'persistent' => true,
                     'timeout'    => 2,
-                    'password'   => ''
-                ]
-            ]
-        ]
-    ]
+                    'password'   => '',
+                ],
+            ],
+
+            'mysql' => [
+                'default' => [
+                    'host'     => '127.0.0.1',
+                    'port'     => 3306,
+                    'user'     => '',
+                    'pass'     => '',
+                    'database' => '',
+                ],
+            ],
+        ],
+    ],
 ];

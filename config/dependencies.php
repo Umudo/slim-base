@@ -123,3 +123,21 @@ $container['redis-default'] = function ($c) {
 
     return $redis->getClient();
 };
+
+$container['mysql-default'] = function ($c) {
+    /**
+     * @var Slim\Container $c
+     */
+    $settings = $c->get('settings')["db"]["mysql"]["default"];
+
+    $dbhost = $settings['host'];
+    $dbport = $settings['port'];
+    $dbuser = $settings['user'];
+    $dbpass = $settings['pass'];
+    $database = $settings['database'];
+
+    $db = new \App\Connection\ExtendedPDO("mysql:host=$dbhost;port=$dbport;dbname=$database;charset=utf8", $dbuser, $dbpass, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
+    $db->query("SET NAMES utf8");
+
+    return $db;
+};
