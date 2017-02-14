@@ -26,5 +26,24 @@ $app->add(function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\M
 
     \App\Helper\Uri::setBasePath($basePath);
 
+    //Set controller and action to request.
+    /* @var \Slim\Route $route */
+    $route = $request->getAttribute('route');
+    $arguments = $route->getArguments();
+
+    if (empty($arguments['controller'])) {
+        $arguments['controller'] = \App\Helper\Container::getContainer()->get('settings')['default_controller'];
+    }
+
+    $arguments['controller'] = strtolower($arguments['controller']);
+
+    if (empty($arguments['action'])) {
+        $arguments['action'] = \App\Helper\Container::getContainer()->get('settings')['default_action'];
+    }
+
+    $arguments['action'] = strtolower($arguments['action']);
+
+    $request = $request->withAttribute('controller', $arguments['controller'])->withAttribute('action', $arguments['action']);
+
     return $next($request, $response);
 });
