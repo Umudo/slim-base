@@ -21,7 +21,7 @@ $app->add(function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\M
     $check_cn_forward_header = $request->getHeader("HTTP_X_FORWARDED_PROTO");
 
     if (!empty($check_cn_forward_header) && $check_cn_forward_header[0] == "https") {
-        $basePath = preg_replace('/http/i', $check_cn_forward_header[0], $basePath, 1);
+        $basePath = preg_replace('/^http(?!s)/i', $check_cn_forward_header[0], $basePath, 1);
     }
 
     \App\Helper\Uri::setBasePath($basePath);
