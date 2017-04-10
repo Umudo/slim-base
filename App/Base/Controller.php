@@ -3,9 +3,9 @@
 namespace App\Base;
 
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\{
-    ServerRequestInterface, ResponseInterface
+    ResponseInterface, ServerRequestInterface
 };
 
 abstract class Controller

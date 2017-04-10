@@ -4,7 +4,7 @@ namespace App\Base;
 
 
 use App\Helper\Container;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 abstract class ConnectionManager
 {

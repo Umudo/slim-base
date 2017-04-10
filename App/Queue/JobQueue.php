@@ -4,7 +4,7 @@ namespace App\Queue;
 
 use App\ConnectionManager\RedisManager;
 use App\Helper\Container;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 class JobQueue
 {

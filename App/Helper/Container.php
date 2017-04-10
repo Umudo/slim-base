@@ -3,7 +3,7 @@
 namespace App\Helper;
 
 use App\Queue\JobQueue;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Monolog\Logger;
 
 /**
