@@ -24,7 +24,7 @@ abstract class Task implements TaskInterface
 
     public function __construct()
     {
-        $this->rk = "task:update_check_time:class:" . get_class($this) . "pid:" . getmypid();
+        $this->rk = "task:update_check_time:class:" . get_class($this) . ":pid:" . getmypid();
 
         $schedule = static::schedule();
         $this->rk_timeout = strtotime($schedule['killWhenNotActiveFor'], 0);
