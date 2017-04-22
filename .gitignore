@@ -3,3 +3,4 @@ logs/*
 .idea/
 composer.lock
 README.md
+.php_cs

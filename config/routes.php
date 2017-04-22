@@ -13,7 +13,7 @@ $app->map(['GET', 'POST'], '/[{controller}]', function (Slim\Http\Request $reque
     $logger = $this->get('logger');
 
     if (!empty($controller_name) && !preg_match($valid_name_regex, $controller_name)) {
-        $logger->info("`" . __FILE__ . "` on line " . __LINE__ . ": Bad controller name `{$controller_name}`");
+        $logger->info('`' . __FILE__ . '` on line ' . __LINE__ . ": Bad controller name `{$controller_name}`");
         $notFoundHandler = $this->get('notFoundHandler');
 
         return $notFoundHandler($request, $response);
@@ -26,7 +26,7 @@ $app->map(['GET', 'POST'], '/[{controller}]', function (Slim\Http\Request $reque
     }
 
     if (!class_exists($full_class_name)) {
-        $logger->info("`" . __FILE__ . "` on line " . __LINE__ . ": Bad controller name `{$controller_name}`");
+        $logger->info('`' . __FILE__ . '` on line ' . __LINE__ . ": Bad controller name `{$controller_name}`");
         $notFoundHandler = $this->get('notFoundHandler');
 
         return $notFoundHandler($request, $response);
@@ -44,7 +44,7 @@ $app->map(['GET', 'POST'], '/[{controller}]', function (Slim\Http\Request $reque
 
     $full_default_action_name = $settings['default_action'] . $settings['action_suffix'];
     if (!method_exists($class, $full_default_action_name)) {
-        $logger->info("`" . __FILE__ . "` on line " . __LINE__ . ": Bad action name `{$full_default_action_name}`");
+        $logger->info('`' . __FILE__ . '` on line ' . __LINE__ . ": Bad action name `{$full_default_action_name}`");
         $notFoundHandler = $this->get('notFoundHandler');
 
         return $notFoundHandler($request, $response);
@@ -54,9 +54,9 @@ $app->map(['GET', 'POST'], '/[{controller}]', function (Slim\Http\Request $reque
 
     if ($action_response instanceof \Psr\Http\Message\ResponseInterface) {
         $response = $action_response;
-    } else if (is_string($action_response)) {
+    } elseif (is_string($action_response)) {
         $response->getBody()->write($action_response);
-    } else if (is_array($action_response)) {
+    } elseif (is_array($action_response)) {
         if ($class->wantsJson()) {
             $response = $response->withJson($action_response);
         } else {
@@ -64,10 +64,10 @@ $app->map(['GET', 'POST'], '/[{controller}]', function (Slim\Http\Request $reque
         }
     } else {
         if (empty($response->getBody()->getSize())) {
-            if ($settings["production"]) {
-                $response->getBody()->write("");
+            if ($settings['production']) {
+                $response->getBody()->write('');
             } else {
-                $response->getBody()->write("`" . __FILE__ . "` on line " . __LINE__ . ": Return type is not valid in `{$full_class_name}` `{$full_default_action_name}`");
+                $response->getBody()->write('`' . __FILE__ . '` on line ' . __LINE__ . ": Return type is not valid in `{$full_class_name}` `{$full_default_action_name}`");
             }
         }
     }
@@ -88,7 +88,7 @@ $app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function 
     $settings = $this->get('settings');
 
     if (!empty($controller_name) && !preg_match($valid_name_regex, $controller_name)) {
-        $logger->info("`" . __FILE__ . "` on line " . __LINE__ . ": Bad controller name `{$controller_name}`");
+        $logger->info('`' . __FILE__ . '` on line ' . __LINE__ . ": Bad controller name `{$controller_name}`");
         $notFoundHandler = $this->get('notFoundHandler');
 
         return $notFoundHandler($request, $response);
@@ -96,7 +96,7 @@ $app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function 
 
     $full_class_name = '\App\Controller\\' . $controller_name;
     if (!class_exists($full_class_name)) {
-        $logger->info("`" . __FILE__ . "` on line " . __LINE__ . ": Bad controller name `{$controller_name}`");
+        $logger->info('`' . __FILE__ . '` on line ' . __LINE__ . ": Bad controller name `{$controller_name}`");
         $notFoundHandler = $this->get('notFoundHandler');
 
         return $notFoundHandler($request, $response);
@@ -112,7 +112,7 @@ $app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function 
     }
 
     if (!empty($action_name) && !preg_match($valid_name_regex, $action_name)) {
-        $logger->info("`" . __FILE__ . "` on line " . __LINE__ . ": Bad action name `{$action_name}`");
+        $logger->info('`' . __FILE__ . '` on line ' . __LINE__ . ": Bad action name `{$action_name}`");
         $notFoundHandler = $this->get('notFoundHandler');
 
         return $notFoundHandler($request, $response);
@@ -120,13 +120,13 @@ $app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function 
 
     $full_action_name = $action_name . $settings['action_suffix'];
     if (empty($action_name) || !method_exists($class, $full_action_name)) {
-        $logger->info("`" . __FILE__ . "` on line " . __LINE__ . ": Bad action name `{$action_name}`");
+        $logger->info('`' . __FILE__ . '` on line ' . __LINE__ . ": Bad action name `{$action_name}`");
         $notFoundHandler = $this->get('notFoundHandler');
 
         return $notFoundHandler($request, $response);
     }
 
-    $params = array();
+    $params = [];
     if (!empty($args['parameters'])) {
         $params = explode('/', $args['parameters']);
     }
@@ -135,9 +135,9 @@ $app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function 
 
     if ($action_response instanceof \Psr\Http\Message\ResponseInterface) {
         $response = $action_response;
-    } else if (is_string($action_response)) {
+    } elseif (is_string($action_response)) {
         $response->getBody()->write($action_response);
-    } else if (is_array($action_response)) {
+    } elseif (is_array($action_response)) {
         if ($class->wantsJson()) {
             $response = $response->withJson($action_response);
         } else {
@@ -145,10 +145,10 @@ $app->map(['GET', 'POST'], '/{controller}/{action}[/{parameters:.+}]', function 
         }
     } else {
         if (empty($response->getBody()->getSize())) {
-            if ($settings["production"]) {
-                $response->getBody()->write("");
+            if ($settings['production']) {
+                $response->getBody()->write('');
             } else {
-                $response->getBody()->write("`" . __FILE__ . "` on line " . __LINE__ . ": Return type is not valid in `{$full_class_name}` `{$full_action_name}`");
+                $response->getBody()->write('`' . __FILE__ . '` on line ' . __LINE__ . ": Return type is not valid in `{$full_class_name}` `{$full_action_name}`");
             }
         }
     }

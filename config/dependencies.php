@@ -39,7 +39,7 @@ $container['jobQueue'] = function ($c) {
      * @var \Slim\Container $c
      * @var array           $settings
      */
-    $options = $c->get('settings')["jobQueue"];
+    $options = $c->get('settings')['jobQueue'];
 
     $options['pathToPhp'] = $c->get('settings')['pathToPhp'];
 
@@ -79,7 +79,7 @@ $container['errorHandler'] = function ($c) {
 
         if ($error instanceof \Error) {
             $logger->error($text);
-        } else if ($error instanceof \Exception) {
+        } elseif ($error instanceof \Exception) {
             $logger->warning($text);
         } else {
             $logger->notice($text);
@@ -102,7 +102,7 @@ $container['mongo-default'] = function ($c) {
     /**
      * @var Slim\Container $c
      */
-    $settings = $c->get('settings')["db"]["mongo"]["default"];
+    $settings = $c->get('settings')['db']['mongo']['default'];
 
     $mongo = new \App\Connection\Mongo($settings['host'], $settings['port'], $settings['uriOptions'], $settings['driverOptions']);
 
@@ -117,7 +117,7 @@ $container['redis-default'] = function ($c) {
     /**
      * @var Slim\Container $c
      */
-    $settings = $c->get('settings')["db"]["redis"]["default"];
+    $settings = $c->get('settings')['db']['redis']['default'];
 
     $redis = new \App\Connection\Redis($settings);
 
@@ -128,7 +128,7 @@ $container['mysql-default'] = function ($c) {
     /**
      * @var Slim\Container $c
      */
-    $settings = $c->get('settings')["db"]["mysql"]["default"];
+    $settings = $c->get('settings')['db']['mysql']['default'];
 
     $dbhost = $settings['host'];
     $dbport = $settings['port'];
@@ -136,8 +136,8 @@ $container['mysql-default'] = function ($c) {
     $dbpass = $settings['pass'];
     $database = $settings['database'];
 
-    $db = new \App\Connection\ExtendedPDO("mysql:host=$dbhost;port=$dbport;dbname=$database;charset=utf8", $dbuser, $dbpass, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
-    $db->query("SET NAMES utf8");
+    $db = new \App\Connection\ExtendedPDO("mysql:host=$dbhost;port=$dbport;dbname=$database;charset=utf8", $dbuser, $dbpass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT]);
+    $db->query('SET NAMES utf8');
 
     return $db;
 };

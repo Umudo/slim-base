@@ -2,7 +2,6 @@
 
 namespace App\Connection;
 
-
 use App\Base\Connection;
 
 class Redis extends Connection
@@ -13,10 +12,10 @@ class Redis extends Connection
     protected $client;
 
     private $optionsMustInclude = [
-        "host",
-        "port",
-        "timeout",
-        "persistent"
+        'host',
+        'port',
+        'timeout',
+        'persistent'
     ];
 
     private $options = [];
@@ -25,10 +24,9 @@ class Redis extends Connection
 
     public function __construct(array $options)
     {
-        foreach ($this->optionsMustInclude as $mustKey)
-        {
+        foreach ($this->optionsMustInclude as $mustKey) {
             if (!isset($options[$mustKey])) {
-                throw new \Exception("Provided options array does not contain all required fields. (". implode(", ", $this->optionsMustInclude) .")");
+                throw new \Exception('Provided options array does not contain all required fields. (' . implode(', ', $this->optionsMustInclude) . ')');
             }
         }
 
@@ -40,26 +38,26 @@ class Redis extends Connection
 
     public function connect()
     {
-        if ($this->options["persistent"] === true) {
+        if ($this->options['persistent'] === true) {
             try {
-                $this->client->pconnect($this->options["host"], $this->options["port"], $this->options["timeout"]);
+                $this->client->pconnect($this->options['host'], $this->options['port'], $this->options['timeout']);
                 $this->connected = true;
             } catch (\RedisException $e) {
-                $this->client->pconnect($this->options["host"], $this->options["port"], $this->options["timeout"]);
+                $this->client->pconnect($this->options['host'], $this->options['port'], $this->options['timeout']);
                 $this->connected = true;
             }
         } else {
             try {
-                $this->client->connect($this->options["host"], $this->options["port"], $this->options["timeout"]);
+                $this->client->connect($this->options['host'], $this->options['port'], $this->options['timeout']);
                 $this->connected = true;
             } catch (\RedisException $e) {
-                $this->client->connect($this->options["host"], $this->options["port"], $this->options["timeout"]);
+                $this->client->connect($this->options['host'], $this->options['port'], $this->options['timeout']);
                 $this->connected = true;
             }
         }
 
-        if (!empty($this->options["password"])) {
-            $this->client->auth($this->options["password"]);
+        if (!empty($this->options['password'])) {
+            $this->client->auth($this->options['password']);
         }
     }
 
@@ -76,7 +74,8 @@ class Redis extends Connection
         return $this->client;
     }
 
-    public function __call($name, $arguments) {
+    public function __call($name, $arguments)
+    {
         if (method_exists($this->getClient(), $name)) {
             if (!$this->isConnected()) {
                 $this->connect();

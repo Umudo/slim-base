@@ -2,11 +2,9 @@
 
 namespace App\Base;
 
-
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\{
-    ResponseInterface, ServerRequestInterface
-};
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 abstract class Controller
 {

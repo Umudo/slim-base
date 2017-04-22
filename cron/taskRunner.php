@@ -6,26 +6,26 @@ $will_check_continuous_task_for = 56;
 $settings = \App\Helper\Container::getContainer()->get('settings')['taskRunner'];
 $settings['pathToPhp'] = \App\Helper\Container::getContainer()->get('settings')['pathToPhp'];
 
-$path = explode("/", trim(realpath(__DIR__), "/"));
+$path = explode('/', trim(realpath(__DIR__), '/'));
 $basePathFolderName = $path[count($path) - 2];
 
 if (!$settings['enabled']) {
-    die("Task Component is not enabled");
+    die('Task Component is not enabled');
 }
 
 
-if (isset($argv[1]) && $argv[1] == "runTask") {
+if (isset($argv[1]) && $argv[1] == 'runTask') {
     $class = $argv[2];
     /* @var $class \App\Base\Task */
-    $class = new $class;
+    $class = new $class();
 
     if ($class->isActive()) {
         $class->start();
     }
 } else {
-    $run_tasks_at_the_end_of_minute = array();
-    $run_continuous_tasks = array();
-    $next_minute = "+1mins";
+    $run_tasks_at_the_end_of_minute = [];
+    $run_continuous_tasks = [];
+    $next_minute = '+1mins';
 
 
     $available_tasks = scanAvailableTasks();
@@ -55,12 +55,10 @@ if (isset($argv[1]) && $argv[1] == "runTask") {
 
             $cron_check = \Cron\CronExpression::factory($schedule['runEvery']);
             if ($cron_check->isDue($next_minute)) {
-
                 for ($i = 0; $i < $schedule['activeProcessCount']; $i++) {
                     $run_tasks_at_the_end_of_minute[] = $available_task;
                 }
             }
-
         } //is continuous task
         else {
             $run_continuous_tasks[$available_task] = $schedule;
@@ -68,7 +66,6 @@ if (isset($argv[1]) && $argv[1] == "runTask") {
     }
 
     do {
-
         foreach ($run_continuous_tasks as $class_name => $schedule) {
             if (isset($schedule['killWhenNotActiveFor'])) {
                 checkRuntimeAndKill($class_name, $schedule['killWhenNotActiveFor'], $settings['redisInstanceName'], $basePathFolderName);
@@ -82,16 +79,14 @@ if (isset($argv[1]) && $argv[1] == "runTask") {
             }
         }
         sleep(1);
-
-    } while (date("s") <= $will_check_continuous_task_for);
+    } while (date('s') <= $will_check_continuous_task_for);
 
     if (!empty($run_tasks_at_the_end_of_minute)) {
-        sleep(60 - date("s"));
+        sleep(60 - date('s'));
         foreach ($run_tasks_at_the_end_of_minute as $class_name) {
             exec('(nohup ' . $settings['pathToPhp'] . ' -f ' . realpath(__DIR__) . '/taskRunner.php runTask "' . $class_name . '" > /dev/null 2>&1 ) & echo ${!};');
         }
     }
-
 }
 
 
@@ -101,7 +96,7 @@ function checkRuntimeAndKill($class_name, $killWhenNotActiveFor, $redisInstanceN
     if (!empty($output)) {
         foreach ($output as $pid) {
             try {
-                $last_check_time = \App\ConnectionManager\RedisManager::getInstance($redisInstanceName)->get("task:update_check_time:class:" . $class_name . ":pid:" . $pid);
+                $last_check_time = \App\ConnectionManager\RedisManager::getInstance($redisInstanceName)->get('task:update_check_time:class:' . $class_name . ':pid:' . $pid);
 
                 $ts_kill_when_not_active_for = strtotime($killWhenNotActiveFor, 0);
                 if (time() - $ts_kill_when_not_active_for > $last_check_time) {
@@ -117,10 +112,10 @@ function checkRuntimeAndKill($class_name, $killWhenNotActiveFor, $redisInstanceN
 
 function scanAvailableTasks()
 {
-    $task_base_path = __DIR__ . "/../App/Task/";
-    $task_class_files = array();
+    $task_base_path = __DIR__ . '/../App/Task/';
+    $task_class_files = [];
     foreach (scandir($task_base_path) as $task_class_file) {
-        if (stripos($task_class_file, ".php") === false) {
+        if (stripos($task_class_file, '.php') === false) {
             continue;
         }
         $task_class_file = 'App\\Task\\' . substr($task_class_file, 0, -4);

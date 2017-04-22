@@ -2,7 +2,6 @@
 
 namespace App\Interfaces;
 
-
 interface Task
 {
     /**

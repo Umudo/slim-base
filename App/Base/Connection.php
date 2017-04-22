@@ -2,8 +2,7 @@
 
 namespace App\Base;
 
-
 abstract class Connection
 {
-    abstract function getClient();
+    abstract public function getClient();
 }

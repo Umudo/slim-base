@@ -18,7 +18,7 @@ class MongoManager extends ConnectionManager
      * @return Mongo
      * @throws \Exception
      */
-    public static function getInstance($instance = "default")
+    public static function getInstance($instance = 'default')
     {
         parent::getInstance($instance);
 
@@ -44,6 +44,6 @@ class MongoManager extends ConnectionManager
 
     protected static function getPrefix()
     {
-        return "mongo-";
+        return 'mongo-';
     }
 }

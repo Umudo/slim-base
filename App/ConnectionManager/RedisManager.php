@@ -2,7 +2,6 @@
 
 namespace App\ConnectionManager;
 
-
 use App\Base\ConnectionManager;
 
 class RedisManager extends ConnectionManager
@@ -18,7 +17,7 @@ class RedisManager extends ConnectionManager
      * @return \Redis
      * @throws \Exception
      */
-    public static function getInstance($instance = "default")
+    public static function getInstance($instance = 'default')
     {
         parent::getInstance($instance);
 
@@ -42,8 +41,8 @@ class RedisManager extends ConnectionManager
         throw new \Exception("Either container is not set or the container does not have {$name}");
     }
 
-    protected static function getPrefix() {
-        return "redis-";
+    protected static function getPrefix()
+    {
+        return 'redis-';
     }
-
 }

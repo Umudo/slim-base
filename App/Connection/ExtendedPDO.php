@@ -8,7 +8,6 @@
 
 namespace App\Connection;
 
-
 use PDO;
 
 class ExtendedPDO extends PDO
@@ -21,9 +20,9 @@ class ExtendedPDO extends PDO
         }
 
         if ($includeParenthesis) {
-            return '('.implode(', ', $value).')';
-        } else {
-            return implode(', ', $value);
+            return '(' . implode(', ', $value) . ')';
         }
+
+        return implode(', ', $value);
     }
 }

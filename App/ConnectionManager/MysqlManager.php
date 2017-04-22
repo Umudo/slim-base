@@ -5,10 +5,8 @@ namespace App\ConnectionManager;
 use App\Base\ConnectionManager;
 use App\Connection\ExtendedPDO;
 
-
 class MysqlManager extends ConnectionManager
 {
-
     protected static $instances = [];
 
     /**
@@ -16,7 +14,7 @@ class MysqlManager extends ConnectionManager
      * @return ExtendedPDO
      * @throws \Exception
      */
-    public static function getInstance($instance = "default")
+    public static function getInstance($instance = 'default')
     {
         parent::getInstance($instance);
 
@@ -42,6 +40,6 @@ class MysqlManager extends ConnectionManager
 
     protected static function getPrefix()
     {
-        return "mysql-";
+        return 'mysql-';
     }
 }

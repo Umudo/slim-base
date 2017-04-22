@@ -9,7 +9,7 @@ use MongoDB\Driver\Exception\ConnectionException;
 
 class Mongo extends Connection
 {
-    protected $collection_map = array();
+    protected $collection_map = [];
 
     /**
      * @var Client
@@ -22,15 +22,15 @@ class Mongo extends Connection
     protected $db;
 
     protected $uriOptions = [
-        "connectTimeoutMS" => 2000,
-        "socketTimeoutMS"  => 60000,
-        "username"         => '',
-        "password"         => '',
+        'connectTimeoutMS' => 2000,
+        'socketTimeoutMS'  => 60000,
+        'username'         => '',
+        'password'         => '',
     ];
 
     protected $driverOptions = [];
 
-    public function __construct($host = "mongodb://localhost", $port = 27017, array $uriOptions = [], array $driverOptions = [])
+    public function __construct($host = 'mongodb://localhost', $port = 27017, array $uriOptions = [], array $driverOptions = [])
     {
         foreach ($uriOptions as $key => $value) {
             $this->uriOptions[$key] = $value;
@@ -49,10 +49,10 @@ class Mongo extends Connection
         }
 
         try {
-            $this->client = new Client($host . ":" . $port, $this->uriOptions, $this->driverOptions);
+            $this->client = new Client($host . ':' . $port, $this->uriOptions, $this->driverOptions);
         } catch (ConnectionException $e) {
             //Try again once.
-            $this->client = new Client($host . ":" . $port, $this->uriOptions, $this->driverOptions);
+            $this->client = new Client($host . ':' . $port, $this->uriOptions, $this->driverOptions);
         }
     }
 
@@ -80,7 +80,7 @@ class Mongo extends Connection
     public function selectDatabase(string $db)
     {
         if (empty($db) || !is_string($db)) {
-            throw new \Exception("Database name must be a string");
+            throw new \Exception('Database name must be a string');
         }
 
         if (empty($this->client)) {
@@ -101,11 +101,11 @@ class Mongo extends Connection
     public function getCollection(string $collectionName, bool $forceCreate = false, bool $overrideExistsCheck = false)
     {
         if (empty($this->db)) {
-            throw new \Exception("Database is not selected");
+            throw new \Exception('Database is not selected');
         }
 
         if (empty($collectionName) || !is_string($collectionName)) {
-            throw new \Exception("Collection name must be a string");
+            throw new \Exception('Collection name must be a string');
         }
 
         if (isset($this->collection_map[$collectionName])) {
@@ -131,10 +131,10 @@ class Mongo extends Connection
     public function checkCollectionExists(string $collectionName)
     {
         if (empty($this->db)) {
-            throw new \Exception("Database is not selected");
+            throw new \Exception('Database is not selected');
         }
 
-        $collection_check = $this->db->listCollections(array("filter" => array("name" => $collectionName)));
+        $collection_check = $this->db->listCollections(['filter' => ['name' => $collectionName]]);
 
         return count(iterator_to_array($collection_check)) > 0;
     }

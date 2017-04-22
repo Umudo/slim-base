@@ -2,7 +2,6 @@
 
 namespace App\Helper;
 
-
 /**
  * Class Escaper
  * @package App\Helper
@@ -14,17 +13,17 @@ namespace App\Helper;
  */
 class Escaper
 {
-    public static function escapeHtml($string): string
+    public static function escapeHtml($string) : string
     {
         return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
-    public static function escapeUrl($string): string
+    public static function escapeUrl($string) : string
     {
         return rawurlencode($string);
     }
 
-    public static function escapeHtmlAttribute($string): string
+    public static function escapeHtmlAttribute($string) : string
     {
         if (0 == strlen($string) ? false : (1 == preg_match('/^./su', $string) ? false : true)) {
             throw new \Exception('The string to escape is not a valid UTF-8 string.');
@@ -42,12 +41,12 @@ class Escaper
          *     XML Parsing Error: undefined entity
          */
 
-        static $entityMap = array(
+        static $entityMap = [
             34 => 'quot', /* quotation mark */
             38 => 'amp',  /* ampersand */
             60 => 'lt',   /* less-than sign */
             62 => 'gt',   /* greater-than sign */
-        );
+        ];
 
         $chr = $matches[0];
         $ord = ord($chr);
@@ -84,7 +83,7 @@ class Escaper
         return sprintf('&#x%s;', $hex);
     }
 
-    public static function escapeCss($string): string
+    public static function escapeCss($string) : string
     {
         if (0 == strlen($string) ? false : (1 == preg_match('/^./su', $string) ? false : true)) {
             throw new \Exception('The string to escape is not a valid UTF-8 string.');
@@ -104,14 +103,16 @@ class Escaper
             if (0 === strlen($hex)) {
                 $hex = '0';
             }
-            return '\\'.$hex.' ';
+
+            return '\\' . $hex . ' ';
         }
         // \uHHHH
         $char = mb_convert_encoding($char, 'UTF-16BE', 'UTF-8');
-        return '\\'.ltrim(strtoupper(bin2hex($char)), '0').' ';
+
+        return '\\' . ltrim(strtoupper(bin2hex($char)), '0') . ' ';
     }
 
-    public static function escapeJs($string): string
+    public static function escapeJs($string) : string
     {
         if (0 == strlen($string) ? false : (1 == preg_match('/^./su', $string) ? false : true)) {
             throw new \Exception('The string to escape is not a valid UTF-8 string.');
@@ -125,10 +126,11 @@ class Escaper
         $char = $matches[0];
         // \xHH
         if (!isset($char[1])) {
-            return '\\x'.strtoupper(substr('00'.bin2hex($char), -2));
+            return '\\x' . strtoupper(substr('00' . bin2hex($char), -2));
         }
         // \uHHHH
         $char = mb_convert_encoding($char, 'UTF-16BE', 'UTF-8');
-        return '\\u'.strtoupper(substr('0000'.bin2hex($char), -4));
+
+        return '\\u' . strtoupper(substr('0000' . bin2hex($char), -4));
     }
 }

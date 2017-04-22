@@ -2,7 +2,6 @@
 
 namespace App\Base;
 
-
 use App\Helper\Container;
 use Psr\Container\ContainerInterface;
 
@@ -18,10 +17,10 @@ abstract class ConnectionManager
      */
     protected static $instances = [];
 
-    public static function getInstance($instance = "default")
+    public static function getInstance($instance = 'default')
     {
         if (empty(self::$ci) || self::$ci instanceof ContainerInterface === false) {
-            throw new \InvalidArgumentException("Provided container is either empty or not an instance of ContainerInterface.");
+            throw new \InvalidArgumentException('Provided container is either empty or not an instance of ContainerInterface.');
         }
     }
 
@@ -34,7 +33,8 @@ abstract class ConnectionManager
         self::$ci = $ci;
     }
 
-    protected static function getPrefix() {
-        return "";
+    protected static function getPrefix()
+    {
+        return '';
     }
 }

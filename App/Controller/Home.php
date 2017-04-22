@@ -8,7 +8,6 @@
 
 namespace App\Controller;
 
-
 use App\Base\Controller;
 
 class Home extends Controller
@@ -21,17 +20,18 @@ class Home extends Controller
 
     public function exampleStringAction()
     {
-        return "Hello World";
+        return 'Hello World';
     }
 
     public function exampleJSONAction()
     {
-        return array("text" => "Hello World");
+        return ['text' => 'Hello World'];
     }
 
     public function exampleResponseAction()
     {
-        $this->response->getBody()->write("Response Test");
+        $this->response->getBody()->write('Response Test');
+
         return clone $this->response;
     }
 }

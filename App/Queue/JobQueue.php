@@ -82,7 +82,7 @@ class JobQueue
     {
         if ($this->options['enabled']) {
             try {
-                $path = explode("/", trim(realpath(__DIR__), "/"));
+                $path = explode('/', trim(realpath(__DIR__), '/'));
                 $basePathFolderName = $path[count($path) - 3];
 
                 $job_count_below_time = $this->redis->zCount($this->queueKey, PHP_INT_MIN, time());
@@ -185,13 +185,13 @@ class JobQueue
         try {
             $class_check = new \ReflectionClass($job['class']);
         } catch (\ReflectionException $e) {
-            $this->getLogger()->addNotice($e, array('classname' => $job['class']));
+            $this->getLogger()->addNotice($e, ['classname' => $job['class']]);
 
             return false;
         }
 
         if (!$class_check->hasMethod($job['method'])) {
-            $this->getLogger()->addNotice("Method {$job['method']} not found in {$job['class']}", array('classname' => $job['class'], 'methodname' => $job['method']));
+            $this->getLogger()->addNotice("Method {$job['method']} not found in {$job['class']}", ['classname' => $job['class'], 'methodname' => $job['method']]);
 
             return false;
         }
@@ -199,7 +199,7 @@ class JobQueue
         $method_check = $class_check->getMethod($job['method']);
 
         if ($method_check->isPrivate()) {
-            $this->getLogger()->addNotice('Method is private', array('classname' => $job['class'], 'methodname' => $job['method']));
+            $this->getLogger()->addNotice('Method is private', ['classname' => $job['class'], 'methodname' => $job['method']]);
 
             return false;
         }
@@ -232,19 +232,19 @@ class JobQueue
                     try {
                         $class_check = new \ReflectionClass($job['class']);
                     } catch (\ReflectionException $e) {
-                        $this->getLogger()->addNotice($e, array('classname' => $job['class']));
+                        $this->getLogger()->addNotice($e, ['classname' => $job['class']]);
                         continue;
                     }
 
                     if (!$class_check->hasMethod($job['method'])) {
-                        $this->getLogger()->addNotice("Method {$job['method']} not found in {$job['class']}", array('classname' => $job['class'], 'methodname' => $job['method']));
+                        $this->getLogger()->addNotice("Method {$job['method']} not found in {$job['class']}", ['classname' => $job['class'], 'methodname' => $job['method']]);
                         continue;
                     }
 
                     $method_check = $class_check->getMethod($job['method']);
 
                     if ($method_check->isPrivate()) {
-                        $this->getLogger()->addNotice('Method is private', array('classname' => $job['class'], 'methodname' => $job['method']));
+                        $this->getLogger()->addNotice('Method is private', ['classname' => $job['class'], 'methodname' => $job['method']]);
                         continue;
                     }
 
