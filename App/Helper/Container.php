@@ -17,12 +17,9 @@ class Container
      */
     private static $container;
 
-    private static $isSet = false;
-
     public static function setContainer(ContainerInterface $container)
     {
         self::$container = $container;
-        self::$isSet = true;
     }
 
     /**
@@ -32,7 +29,7 @@ class Container
      */
     public static function getContainer()
     {
-        if (self::$isSet) {
+        if (!empty(self::$container)) {
             return self::$container;
         }
 
@@ -48,14 +45,14 @@ class Container
      */
     public static function getLogger($type = 'default')
     {
-        if (self::$isSet) {
+        if (!empty(self::$container)) {
             $name = '';
             if ($type === 'default') {
                 $name = 'logger';
             }
 
-            if (!empty($name) && self::getContainer()->has($name)) {
-                return self::getContainer()->get($name);
+            if (!empty($name) && self::$container->has($name)) {
+                return self::$container->get($name);
             }
 
             throw new \Exception("$type logger is not set in container");
@@ -71,9 +68,9 @@ class Container
      */
     public static function getJobQueue()
     {
-        if (self::$isSet) {
-            if (self::getContainer()->has('jobQueue')) {
-                return self::getContainer()->get('jobQueue');
+        if (!empty(self::$container)) {
+            if (self::$container->has('jobQueue')) {
+                return self::$container->get('jobQueue');
             }
 
             throw new \Exception('jobQueue is not set in container');

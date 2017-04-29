@@ -23,11 +23,6 @@ class JobQueue
      */
     protected $redis;
 
-    /**
-     * @var ContainerInterface
-     */
-    protected $ci;
-
     protected $options = [
         'enabled'              => false,
         'redisInstanceName'    => 'default',
@@ -39,7 +34,7 @@ class JobQueue
         'consumerCronFileName' => 'jobQueueConsumer.php',
     ];
 
-    public function __construct(array $options = [], ContainerInterface $ci = null)
+    public function __construct(array $options = [])
     {
         $this->options = array_merge($this->options, $options);
 
@@ -61,12 +56,6 @@ class JobQueue
             }
 
             $this->redis = RedisManager::getInstance($this->options['redisInstanceName']);
-
-            if (empty($ci)) {
-                $ci = Container::getContainer();
-            }
-
-            $this->ci = $ci;
         }
     }
 
@@ -75,7 +64,7 @@ class JobQueue
      */
     protected function getLogger()
     {
-        return $this->ci->get('logger');
+        return Container::getLogger();
     }
 
     public function decide()
