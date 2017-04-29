@@ -3,6 +3,7 @@
 $app->add(new \App\Middleware\SessionMiddleware($app->getContainer()->get('settings')['session']));
 
 $app->add(function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\Message\ResponseInterface $response, callable $next) {
+    /** @var \Slim\Http\Uri $uri */
     $uri = $request->getUri();
     $path = $uri->getPath();
 
@@ -16,7 +17,11 @@ $app->add(function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\M
         return $response->withStatus(301)->withHeader('Location', (string)$uri); //exists in \Slim\Http\Response
     }
 
-    $basePath = $uri->getBaseUrl();
+    $basePath = $uri->getScheme() . '://' . trim($uri->getHost(), '/');
+    if (!empty($uri->getPort())) {
+        $basePath .= ':' . $uri->getPort();
+    }
+    $basePath = trim($basePath, '/');
 
     $check_cn_forward_header = $request->getHeader('HTTP_X_FORWARDED_PROTO');
 

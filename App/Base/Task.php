@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Base;
 
 use App\ConnectionManager\RedisManager;

@@ -1,11 +1,11 @@
 <?php
+
 namespace App\Task;
 
 use App\Base\Task;
 
 class Example extends Task
 {
-
     /**
      * @return bool
      */
