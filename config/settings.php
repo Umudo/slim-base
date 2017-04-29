@@ -40,7 +40,7 @@ return [
             'enabled'              => true,
             'redisInstanceName'    => 'default',
             'runFor'               => 60,
-            'maxJobFetch'          => 10000,
+            'maxJobFetch'          => 50,
             'minCronCount'         => 1,
             'maxCronCount'         => 2,
             'consumerCronFileName' => 'jobQueueConsumer.php',

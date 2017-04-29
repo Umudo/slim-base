@@ -27,7 +27,7 @@ class JobQueue
         'enabled'              => false,
         'redisInstanceName'    => 'default',
         'runFor'               => 60,
-        'maxJobFetch'          => 10000,
+        'maxJobFetch'          => 50,
         'minCronCount'         => 1,
         'maxCronCount'         => 2,
         'pathToPhp'            => '/usr/local/bin/php',
@@ -139,6 +139,12 @@ class JobQueue
      */
     public function addJob($class, $method, $args = [], $delay = 0, $construct_args = [])
     {
+        if (PHP_SAPI === 'cli') {
+            $this->addJobNow($class, $method, $args, $delay, $construct_args);
+
+            return;
+        }
+
         $this->jobs[] = [
             'class'          => $class,
             'method'         => $method,
