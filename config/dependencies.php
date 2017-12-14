@@ -104,7 +104,7 @@ $container['mongo-default'] = function ($c) {
      */
     $settings = $c->get('settings')['db']['mongo']['default'];
 
-    $mongo = new \App\Connection\Mongo($settings['host'], $settings['port'], $settings['uriOptions'], $settings['driverOptions']);
+    $mongo = new \App\Connection\Mongo($settings['host'], $settings['uriOptions'], $settings['driverOptions']);
 
     if (!empty($settings['database'])) {
         $mongo->selectDatabase($settings['database']);

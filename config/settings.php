@@ -55,8 +55,7 @@ return [
             //Database configurations
             'mongo' => [
                 'default' => [
-                    'host'          => 'mongodb://localhost',
-                    'port'          => 27017,
+                    'host'          => 'mongodb://localhost:27017',
                     'username'      => '',
                     'password'      => '',
                     'uriOptions'    => [

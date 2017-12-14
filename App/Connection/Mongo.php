@@ -26,11 +26,13 @@ class Mongo extends Connection
         'socketTimeoutMS'  => 60000,
         'username'         => '',
         'password'         => '',
+        'readPreference'   => '',
+        'replicaSet'       => '',
     ];
 
     protected $driverOptions = [];
 
-    public function __construct($host = 'mongodb://localhost', $port = 27017, array $uriOptions = [], array $driverOptions = [])
+    public function __construct($host = 'mongodb://localhost:27017', array $uriOptions = [], array $driverOptions = [])
     {
         foreach ($uriOptions as $key => $value) {
             $this->uriOptions[$key] = $value;
@@ -48,11 +50,19 @@ class Mongo extends Connection
             unset($this->uriOptions['password']);
         }
 
+        if (empty($this->uriOptions['readPreference'])) {
+            unset($this->uriOptions['readPreference']);
+        }
+
+        if (empty($this->uriOptions['replicaSet'])) {
+            unset($this->uriOptions['replicaSet']);
+        }
+
         try {
-            $this->client = new Client($host . ':' . $port, $this->uriOptions, $this->driverOptions);
+            $this->client = new Client($host, $this->uriOptions, $this->driverOptions);
         } catch (ConnectionException $e) {
             //Try again once.
-            $this->client = new Client($host . ':' . $port, $this->uriOptions, $this->driverOptions);
+            $this->client = new Client($host, $this->uriOptions, $this->driverOptions);
         }
     }
 
